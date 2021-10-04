@@ -119,7 +119,7 @@ as
 		else
 			print 'the da duoc su dung'	
 end
-exec sp_them_vethe 6,'29T1-095312',N'đen',N'lead','2021-09-27 00:00:00.000','2021-09-27 10:00:00.000',2,2
+exec sp_them_vethe 1,'29T1-095312',N'đen',N'lead','2021-09-27 00:00:00.000','2021-09-27 10:00:00.000',2,2
 -- store sửa ve thẻ
 go
 create proc sp_sua_vethe @mathe int,@bienso nvarchar(255),@mauxe nvarchar(255),@loaixe nvarchar(255),@manhanvien int,@magia int
@@ -159,10 +159,67 @@ as
 end
 -- store thêm khu vực
 go 
+-- store cập nhật thông tin nhân viên
+create proc sp_capnhat_nhanvien @ten nvarchar(255),@tuoi int,@sdt nvarchar(255),@mavaitro int, @manv int
+as
+	begin
+		update tblNhanVien
+		set ten=@ten,
+		tuoi=@tuoi,
+		sdt=@sdt,
+		mavaitro=@mavaitro
+		where maNhanVien=@manv
+end
+-- store xóa  thông tin nhân viên
+go 
+create proc sp_xoa_nhanvien  @manv int
+as
+	begin	
+		delete tblVeThe where maNhanVien=@manv
+		delete tblTaiKhoan where maNhanVien=@manv
+		delete tblNhanVien where maNhanVien=@manv
+end
+-- store thêm khu vực
+go 
 create proc sp_them_khuvuc @tenkhuvuc nvarchar(255),@soluongtoida int,@soluonghientai int
 as
 	begin
 		insert into tblKhuVuc values(@tenkhuvuc,@soluongtoida,@soluonghientai)
+end
+-- store cập nhật khu vực
+go 
+create proc sp_capnhat_khuvuc @tenkhuvuc nvarchar(255),@soluongtoida int,@soluonghientai int, @makhuvuc int
+as
+	begin
+		declare @tontai int
+	set @tontai = (select count(tenKhuVuc) from tblKhuVuc where maKhuVuc=@makhuvuc)
+	if @tontai = 0
+		begin
+			print N'Mã khu vực không tồn tại'
+		end
+	else
+		UPDATE tblKhuVuc 
+		SET 
+		tenKhuVuc=@tenkhuvuc,
+		soLuongToiDa=@soluongtoida,
+		soLuongHienTai=@soluonghientai
+		WHERE
+		maKhuVuc=@makhuvuc
+end
+-- store xóa khu vực
+go 
+create proc sp_xoa_khuvuc @makhuvuc int
+as
+	begin
+		declare @tontai int
+	set @tontai = (select count(tenKhuVuc) from tblKhuVuc where maKhuVuc=@makhuvuc)
+	if @tontai = 0
+		begin
+			print N'Mã khu vực không tồn tại'
+		end
+	else
+		DELETE tblThe WHERE maKhuVuc=@makhuvuc
+		DELETE tblKhuVuc WHERE maKhuVuc=@makhuvuc
 end
 -- store thêm thẻ
 go 
@@ -208,7 +265,67 @@ begin
 	else
 		print N'Tên tài khoản đã được sử dụng'
 end
-
+--store cập nhật tài khoản
+go
+create proc sp_capnhat_taikhoan @taikhoan varchar(255),@matkhau varchar(255),@manhanvien int, @matk int
+as
+begin
+	declare @tontai int
+	set @tontai = (select count(taikhoan) from tblTaiKhoan where maTaiKhoan=@matk)
+	if @tontai = 0
+		begin
+			print N'Mã tài khoản không tồn tại'
+		end
+	else
+		UPDATE tblTaiKhoan 
+		SET 
+		taiKhoan=@taikhoan,
+		matKhau=@matkhau,
+		maNhanVien=@manhanvien
+		WHERE
+		maTaiKhoan=@matk
+end
+--store cập nhật mật khẩu tài khoản
+go
+create proc sp_capnhat_matkhau @matkhau varchar(255),@matkhaumoi varchar(255),@matkhaumoi_nhaplai varchar(255), @matk int
+as
+begin
+	declare @tontai int
+	declare @checkmatkhau int
+	set @tontai = (select count(taikhoan) from tblTaiKhoan where maTaiKhoan=@matk AND 1=1)
+	set @checkmatkhau = (select count(taikhoan) from tblTaiKhoan where matKhau=@matkhau AND  maTaiKhoan=@matk AND 1=1)
+	if @tontai = 0 
+		begin
+			print N'Mã tài khoản không tồn tại'
+		end
+	else if @checkmatkhau = 0
+		begin
+			print N'Mật khẩu cũ sai'
+		end
+	else
+		UPDATE tblTaiKhoan 
+		SET 
+		matKhau=@matkhaumoi
+		WHERE
+		maTaiKhoan=@matk
+end
+--store xóa tài khoản
+go
+create proc sp_xoa_taikhoan @taikhoan varchar(255),@matkhau varchar(255)
+as
+begin
+	declare @tontai int
+	set @tontai = (select count(taikhoan) from tblTaiKhoan where taiKhoan=@taikhoan AND 1=1)
+	if @tontai = 0 
+		begin
+			print N'Tài khoản không tồn tại'
+		end
+	else
+		DELETE tblTaiKhoan 
+		WHERE
+		taiKhoan=@taikhoan AND
+		matKhau = @matkhau
+end
 -- trigger update soluonghientai khi them, cap nhat vethe
 go
 --drop trigger tr_soluonghientai_khuvuc_vethe

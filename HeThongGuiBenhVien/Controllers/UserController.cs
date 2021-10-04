@@ -95,5 +95,63 @@ namespace HeThongGuiBenhVien.Controllers
                 return responseUlti.Error(e.Message, 400);
             }
         }
+        [Route("updateUser")] // api/account/addUser
+        [HttpPost]
+        public object updateUser([FromBody] NhanVien nhanvien)
+        {
+            //create proc sp_them_nhanvien @ten nvarchar(255),@tuoi int,@sdt nvarchar(255),@mavaitro int
+            //as
+            // begin
+            //        insert into tblNhanVien values(@ten, @tuoi, @sdt, @mavaitro)
+            //end
+            try
+            {
+                string[] nameParams = new string[] { "@ten", "@tuoi", "@sdt", "@mavaitro", "@manv" };
+                object[] parames = new object[] { nhanvien.Tennv, nhanvien.Tuoi, nhanvien.Sodienthoai, nhanvien.Mavaitro, nhanvien.Manv};
+                if (provider.ExecuteNonProc("sp_capnhat_nhanvien", nameParams, parames) > 0)
+                {
+                    string queryString = "select * from tblNhanVien WHERE  1=1 AND maNhanVien=" + parames[4];
+                    DataTable result = provider.ExecuteQuery(queryString);
+                    return responseUlti.dataArray(userService.GetNhanVienInTable(result), "Cập nhật thông tin thành công!", 200);
+                }
+                else
+                {
+                    throw new Exception("Cập nhật không thành công!");
+                }
+            }
+            catch (Exception e)
+            {
+                return responseUlti.Error(e.Message, 400);
+            }
+        }
+        [Route("deleteUser")] // api/account/addUser
+        [HttpPost]
+        public object deleteUser([FromBody] NhanVien nhanvien)
+        {
+            //create proc sp_them_nhanvien @ten nvarchar(255),@tuoi int,@sdt nvarchar(255),@mavaitro int
+            //as
+            // begin
+            //        insert into tblNhanVien values(@ten, @tuoi, @sdt, @mavaitro)
+            //end
+            try
+            {
+                string[] nameParams = new string[] {"@manv" };
+                object[] parames = new object[] {  nhanvien.Manv };
+                if (provider.ExecuteNonProc("sp_xoa_nhanvien", nameParams, parames) > 0)
+                {
+                    string queryString = "select * from tblNhanVien WHERE 1=1";
+                    DataTable result = provider.ExecuteQuery(queryString);
+                    return responseUlti.dataArray(userService.GetNhanVienInTable(result), "Xóa thông tin thành công!", 200);
+                }
+                else
+                {
+                    throw new Exception("Xóa không thành công!");
+                }
+            }
+            catch (Exception e)
+            {
+                return responseUlti.Error(e.Message, 400);
+            }
+        }
     }
 }

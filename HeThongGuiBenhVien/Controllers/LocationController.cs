@@ -64,5 +64,63 @@ namespace HeThongGuiBenhVien.Controllers
                 return responseUlti.Error(e.Message, 400);
             }
         }
+        [Route("updateLocation")] // api/location/addLocation
+        [HttpPost]
+        public object updateLocation([FromBody] KhuVuc khuvuc)
+        {
+            //create proc sp_them_khuvuc @tenkhuvuc nvarchar(255),@soluongtoida int, @soluonghientai int
+            //as
+            //    begin
+            //        insert into tblKhuVuc values(@tenkhuvuc, @soluongtoida, @soluonghientai)
+            //end
+            try
+            {
+                string[] nameParams = new string[] { "@tenkhuvuc", "@soluongtoida", "@soluonghientai", "@makhuvuc" };
+                object[] parames = new object[] { khuvuc.Tenkhuvuc, khuvuc.Soluongtoida, khuvuc.Soluonghientai, khuvuc.Makhuvuc };
+                if (provider.ExecuteNonProc("sp_capnhat_khuvuc", nameParams, parames) > 0)
+                {
+                    string queryString = "SELECT * FROM tblKhuVuc WHERE 1=1 AND maKhuVuc="+ parames[3];
+                    DataTable result = provider.ExecuteQuery(queryString);
+                    return responseUlti.dataArray(locationService.GetKhuVucInTable(result), "Cập nhật thông tin thành công!", 200);
+                }
+                else
+                {
+                    throw new Exception("Cập nhật thông tin không thành công!");
+                }
+            }
+            catch (Exception e)
+            {
+                return responseUlti.Error(e.Message, 400);
+            }
+        }
+        [Route("deleteLocation")] // api/location/addLocation
+        [HttpPost]
+        public object deleteLocation([FromBody] KhuVuc khuvuc)
+        {
+            //create proc sp_them_khuvuc @tenkhuvuc nvarchar(255),@soluongtoida int, @soluonghientai int
+            //as
+            //    begin
+            //        insert into tblKhuVuc values(@tenkhuvuc, @soluongtoida, @soluonghientai)
+            //end
+            try
+            {
+                string[] nameParams = new string[] { "@makhuvuc" };
+                object[] parames = new object[] { khuvuc.Makhuvuc };
+                if (provider.ExecuteNonProc("sp_xoa_khuvuc", nameParams, parames) > 0)
+                {
+                    string queryString = "SELECT * FROM tblKhuVuc WHERE 1=1 ";
+                    DataTable result = provider.ExecuteQuery(queryString);
+                    return responseUlti.dataArray(locationService.GetKhuVucInTable(result), "Xóa thông tin thành công!", 200);
+                }
+                else
+                {
+                    throw new Exception("Xóa thông tin không thành công!");
+                }
+            }
+            catch (Exception e)
+            {
+                return responseUlti.Error(e.Message, 400);
+            }
+        }
     }
 }
