@@ -1,0 +1,22 @@
+.profilePage {
+    background-color: white;
+}
+.baseSetting {
+    padding: 20px;
+    .form-item-setting {
+        flex-direction: column;
+        .ant-form-item-label {
+            text-align: left;
+        }
+    }
+    .columns-form {
+        padding: 10px;
+        .form-item-upload {
+            .ant-row {
+                display: flex;
+                justify-content: center;
+                margin-bottom: 10px;
+            }
+        }
+    }
+}

@@ -1,0 +1,90 @@
+.c-header.c-header-fixed{
+    z-index: 100!important;
+    background: #476180;
+}
+.c-app.c-default-layout{
+    background:url('../assets/login_background_dark.svg');
+}
+.sider-right{
+  width: 200px;
+  height: 200px;
+  text-align: center;
+}
+.login_container{
+    .card-group{
+        padding: 0px 10px;
+        background-color: #0c1c30;
+        box-shadow: 1px 0px 14px 8px #202085;
+    }
+    .card{
+        background: transparent;
+        border: none;
+    }
+    .title{
+        color:#ffffffbf
+    }
+   
+}
+.error{
+    color:red;
+}
+.base_center{
+    justify-content:   center;
+    width: 100%;
+}
+.c-sidebar{
+    background: #122648 !important;
+}
+.link---top{
+    font-size: 15px;
+    color: #4c3a3a;
+    font-weight: bold;
+}
+.wall-loading{
+    position: absolute;
+    top: 0;
+    left: 0;
+    display: flex;
+    height: 100vh;
+    justify-content: center;
+    width: 100vw;
+    align-items: center;
+    opacity: .5;
+    z-index: 100000;
+    background: aliceblue;
+}
+// scroll bar
+/* width */
+::-webkit-scrollbar {
+    width: 10px;
+  }
+  
+  /* Track */
+  ::-webkit-scrollbar-track {
+    box-shadow: inset 0 0 5px grey; 
+    border-radius: 10px;
+  }
+   
+  /* Handle */
+  ::-webkit-scrollbar-thumb {
+    background: rgb(180, 176, 176); 
+    border-radius: 10px;
+  }
+  
+  /* Handle on hover */
+  ::-webkit-scrollbar-thumb:hover {
+    background: #b30000; 
+  }
+
+.ant-drawer-body{
+    padding: 0px !important;
+}
+.ant-table-thead > tr > td,.ant-table-tbody > tr > td {
+    border-bottom: 1px solid #ccc !important;
+}
+.c-wrapper:not(.c-wrapper-fluid) .c-body{
+    margin-bottom: 30px;
+}
+.ant-table-column-title,.ant-table-cell{
+    text-align: center;
+}

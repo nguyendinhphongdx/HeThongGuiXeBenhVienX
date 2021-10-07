@@ -1,0 +1,12 @@
+/node_modules
+node_modules
+node_modules/
+node_modules
+/client/node_modules
+*/node_modules
+/public/courses
+/public/lessons
+/public/instructions
+*/build
+/client/build
+build/
