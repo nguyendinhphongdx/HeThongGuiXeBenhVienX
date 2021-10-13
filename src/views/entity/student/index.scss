@@ -1,0 +1,42 @@
+.box-image {
+  @keyframes scanning {
+    50% {
+      transform: translateY(350px);
+    }
+  }
+  @keyframes beam {
+    50% {
+      opacity: 0;
+    }
+  }
+
+  position: relative;
+  width: 400px;
+  display: flex;
+  justify-content: center;
+//   opacity: .8;
+  .diode {
+    display: none;
+    animation: beam 0.01s infinite;
+    height: 100%;
+    position: absolute;
+    z-index: 1;
+    width: 100%;
+  }
+  .laser {
+    width: 100%;
+    height: 2px;
+    background-color: black;
+    animation: scanning 2s infinite;
+  }
+  .active{
+    display: block;
+  }
+  
+}
+.blur{
+    opacity: .7;
+}
+.impress{
+    font-weight: 700;
+}

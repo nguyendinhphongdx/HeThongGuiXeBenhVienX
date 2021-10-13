@@ -2,7 +2,7 @@ import { message } from 'antd';
 import sendRequest from '../../axios/requestAPI';
 import StatisticActions from '../actions/statisticActions';
 import Converter from '../../helpers/converter';
-import { openSuccessNotif } from '../../views/notifications/notif/notifStore';
+import StoreNotif from '../../views/notifications/notif/notifStore';
 class StatisticService{
     // dữ liệu thống kê chưa tổng hợp
     QueryCollectedLogs = async (dispatch) => {
@@ -18,7 +18,7 @@ class StatisticService{
         })
         .catch((error) => {
             console.log(error);
-            // openSuccessNotif('Thông báo', error.message, 2000, 'error');
+            // StoreNotif.openSuccessNotif('Thông báo', error.message, 2000, 'error');
         });
     return result;
       }
@@ -37,7 +37,7 @@ class StatisticService{
             })
             .catch((error) => {
                 console.log(error);
-                // openSuccessNotif('Thông báo', error.message, 2000, 'error');
+                // StoreNotif.openSuccessNotif('Thông báo', error.message, 2000, 'error');
             });
         return result;
     }

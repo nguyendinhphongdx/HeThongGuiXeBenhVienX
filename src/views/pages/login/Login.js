@@ -32,24 +32,38 @@ const Login = (props) => {
       alert(valid.message);
       setLoading(false);
     } else {
-      UserService.LoginService(data)
-        .then((result) => {
-          if (result) {
-            const token = result.token || "qwertyuiopasdfghjklzxcvbnm";
+      // UserService.LoginService(data)
+      //   .then((result) => {
+      //     if (result) {
+      //       const token = result.token || "qwertyuiopasdfghjklzxcvbnm";
+      //       const storage = {
+      //         token,
+      //         currentUser:result.user
+      //       }
+      //       login(storage, history,from);
+      //     }
+      //   })
+      //   .finally(() => {
+      //     setLoading(false);
+      //   })
+            const token =  "qwertyuiopasdfghjklzxcvbnm";
             const storage = {
               token,
-              currentUser:result.user
+              currentUser: {
+                "permission": "admin",
+                "_id": "60463f52ce50de4ec21e0a37",
+                "user_name": "root123",
+                "hash_password": "$2b$10$CjA5irSvIu.i98E4OAgmw./X9oqWP4rXUDOjMQzBz3mhoDj1dw6Eu",
+                "phone": "0352337342",
+                "email": "phongnguyendx3@gmail.com",
+                "createdAt": "2021-03-08T15:14:26.515Z",
+                "updatedAt": "2021-03-08T15:14:26.515Z",
+                "__v": 0
+            }
             }
             login(storage, history,from);
-          }
-        })
-        .finally(() => {
-          setLoading(false);
-        })
     }
 
-  }
-  const loginFacebook = () =>{
   }
   return (
     <div className="c-app c-default-layout flex-row align-items-center">
@@ -87,11 +101,7 @@ const Login = (props) => {
                       <CCol xs="12">
                         <CButton color="primary" type="submit" style={{ width: '100%' }} className="px-12" disabled={loading}>Login</CButton>
                       </CCol>
-                      <CCol xs="12">
-                        <CButton color="dashed" style={{ width: '100%' }} className="px-12" 
-                        onClick={()=> loginFacebook()}
-                        >Login With Facebook</CButton>
-                      </CCol>
+                      
                     </CRow>
                     <Link to="/register">
                       <CButton color="dashed" className="mt-3" active tabIndex={-1}>Register Now!</CButton>
@@ -108,7 +118,7 @@ const Login = (props) => {
                     />
                   </div>
                   <div>
-                    <h3 className="title">Welcome to Khoa Bảng Academy</h3>
+                    <h3 className="title">Bãi Xe Bệnh Viện X</h3>
                   </div>
                 </CCardBody>
               </CCard>

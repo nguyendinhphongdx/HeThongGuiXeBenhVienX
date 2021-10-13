@@ -1,6 +1,7 @@
 import { message } from "antd";
 import sendRequest from "../../axios/requestAPI";
 import converter from "../../helpers/converter";
+import StoreNotif from "../../views/notifications/notif/notifStore";
 import { QueryAll_User } from "../actions/userActions";
 
 class UserService {
@@ -16,7 +17,7 @@ class UserService {
         }
       })
       .catch(error => {
-        message.error(error.message);
+        StoreNotif.openSuccessNotif("Create User", error.message, 2000);
       });
     return result;
   };
@@ -48,7 +49,7 @@ class UserService {
         }
       })
       .catch(error => {
-        message.error(error.message);
+        StoreNotif.openSuccessNotif("Query User", error.message, 2000);
       });
     return result;
   };

@@ -88,3 +88,37 @@
 .ant-table-column-title,.ant-table-cell{
     text-align: center;
 }
+.tabelPanel {
+    display: flex;
+    flex-wrap: nowrap !important;
+    .table-list{
+        width: 65%;
+    }
+    .table-info{
+        width: 35%;
+        height: fit-content;
+    }
+    .table{
+        margin: 5px 5px;
+        border-radius: 15px;
+        overflow: hidden;
+    }
+    button{
+        padding: 5px 15px;
+        height: fit-content;
+        border-radius: 15px;
+        margin:0 10px;
+        display: flex;
+        svg{
+            align-self: center;
+            margin: 0px 3px;
+        }
+    }
+    .footer-button{
+        display: flex;
+        justify-content: flex-end;
+    }   
+    .ant-table-cell{
+        text-align: center;
+    }
+}

@@ -2,7 +2,7 @@ import { message } from "antd";
 import sendRequest from "../../axios/requestAPI";
 import SettingsActions from "../actions/settingsActions";
 import Converter from "../../helpers/converter";
-import { openSuccessNotif } from "../../views/notifications/notif/notifStore";
+import StoreNotif from "../../views/notifications/notif/notifStore";
 class SettingsServices {
   QueryConfig = async dispatch => {
     const result = await sendRequest("/settings/config", "get")
@@ -19,7 +19,7 @@ class SettingsServices {
       })
       .catch(error => {
         console.log(error);
-        // openSuccessNotif("Thông báo", error.message, 2000, "error");
+        // StoreNotif.openSuccessNotif("Thông báo", error.message, 2000, "error");
       });
     return result;
   };
@@ -38,7 +38,7 @@ class SettingsServices {
     })
     .catch(error => {
       console.log(error);
-      openSuccessNotif("Thông báo", error.message, 2000, "error");
+      StoreNotif.openSuccessNotif("Thông báo", error.message, 2000, "error");
     });
   return result;
   }

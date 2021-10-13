@@ -6,7 +6,7 @@ import { useDispatch, useSelector } from "react-redux";
 import settingsServices from "../../redux/services/settingsServices";
 import TabNotify from "./components/TabNotify";
 import HelperClass from '../../helpers/helpers';
-import { openSuccessNotif } from "../notifications/notif/notifStore";
+import StoreNotif from "../notifications/notif/notifStore";
 const Settings = () => {
   const dispatch = useDispatch();
   const [form] = useForm();
@@ -24,7 +24,7 @@ const Settings = () => {
     HelperClass.SetLoading(true,dispatch);
     setTimeout(()=>{
       settingsServices.UpdateConfig({reset:true},dispatch).then(data => {
-        // openSuccessNotif('Thông báo', 'Reset Default Success!', 2000, 'success');
+        // StoreNotif.openSuccessNotif('Thông báo', 'Reset Default Success!', 2000, 'success');
       })
       .finally(()=> HelperClass.SetLoading(false,dispatch))
     },1000)

@@ -26,25 +26,15 @@ import "./styles.scss";
 const WidgetsCountData = lazy(() => import("./components/WidgetsCountData"));
 
 const Dashboard = () => {
-  const classes = useSelector(state => state.Class).classes;
-  const operationSystem = useSelector(state => state.Statistic).operationSystem;
-  const vulnerability = useSelector(state => state.Statistic).vulnerability;
   const store = useSelector(state => state);
   console.log('STORE APP',store);
   const dispatch = useDispatch();
   useEffect(() => {
-     Promise.all([
-      ClassServices.GetDataClass(dispatch),
-      ProfessorServices.GetDataProfessor(dispatch),
-     
-     ])
-     .then(datas => message.destroy())
-    return () => {
-    }
+    
   }, [])
   return (
     <div className="page-dashboard">
-      <WidgetsCountData data={classes}/>
+      <WidgetsCountData data={[]}/>
       <CRow >
         <CCol xs="8" xl="6">
           <SlideCarosel data={ [] }/>
@@ -142,10 +132,10 @@ const Dashboard = () => {
 
       <CRow>
         <CCol xs="12" xl="6">
-          <DoughNutChartData title={'Operations System'} data={operationSystem}/>
+          <DoughNutChartData title={'Operations System'} data={[]}/>
         </CCol>
         <CCol xs="12" xl="6">
-          <DoughNutChartData title={'Vulnerability'} data={vulnerability}/>
+          <DoughNutChartData title={'Vulnerability'} data={[]}/>
         </CCol>
       </CRow>
       <CRow>

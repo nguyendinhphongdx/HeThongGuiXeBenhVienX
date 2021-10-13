@@ -5,7 +5,7 @@ import "./styles.scss";
 import settingsServices from "../../../../redux/services/settingsServices";
 import { useDispatch } from "react-redux";
 import HelperClass from "../../../../helpers/helpers";
-import { openSuccessNotif } from "../../../notifications/notif/notifStore";
+import StoreNotif from "../../../notifications/notif/notifStore";
 const TabNotify = ({ notify, bmail, firebase, news, els, logs, form }) => {
   const dispatch = useDispatch();
   const [checkUser, setCheckUser] = useState(() => notify.activeUser);

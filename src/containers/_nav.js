@@ -14,30 +14,6 @@ const _nav = [
   },
   {
     _tag: "CSidebarNavTitle",
-    _children: ["SOC"],
-  },
-  // {
-  //   _tag: "CSidebarNavItem",
-  //   name: "Services",
-  //   to: "/services",
-  //   icon: <CIcon name="cil-chart-pie" customClasses="c-sidebar-nav-icon" />,
-  //   badge: {
-  //     color: "info",
-  //     text: "NEW",
-  //   },
-  // },
-  {
-    _tag: "CSidebarNavItem",
-    name: "Calendar",
-    to: "/calendar",
-    icon: <CIcon name="cil-star" customClasses="c-sidebar-nav-icon" />,
-    badge: {
-      color: "info",
-      text: "NEW",
-    },
-  },
-  {
-    _tag: "CSidebarNavTitle",
     _children: ["System Manager"],
   },
   {
@@ -48,29 +24,24 @@ const _nav = [
     _children: [
       {
         _tag: "CSidebarNavItem",
-        name: "Class",
-        to: "/entity/class",
+        name: "Ticket",
+        to: "/entity/ticket",
       },
       {
         _tag: "CSidebarNavItem",
-        name: "Professor",
-        to: "/entity/professor",
+        name: "Card",
+        to: "/entity/card",
       },
       {
         _tag: "CSidebarNavItem",
-        name: "Student",
-        to: "/entity/student",
+        name: "Location",
+        to: "/entity/location",
       },
       {
         _tag: "CSidebarNavItem",
-        name: "Subject",
-        to: "/entity/subject",
-      },
-      {
-        _tag: "CSidebarNavItem",
-        name: "Document",
-        to: "/entity/document",
-      },
+        name: "Staff",
+        to: "/entity/users",
+      }
     ],
   },
   {

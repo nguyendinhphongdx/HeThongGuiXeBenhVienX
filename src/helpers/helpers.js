@@ -12,15 +12,15 @@ class HelperClass {
     }
   }
   VerifyToken = token => {
-    const result = jwt.verify(token, "key_secret", function (err, decoded) {
-      if (err) {
-        return null;
-      } else {
-        return token;
-      }
-    });
-    console.log("veryfy token", result);
-    return result;
+    // const result = jwt.verify(token, "key_secret", function (err, decoded) {
+    //   if (err) {
+    //     return null;
+    //   } else {
+    //     return token;
+    //   }
+    // });
+    // console.log("veryfy token", result);
+    return token;
   };
   CountPercent(data, Other = true) {
     var total = 0;
@@ -146,6 +146,22 @@ class HelperClass {
         return listClass.find(_item =>JSON.stringify(_item._id)===JSON.stringify(item))
     })
     return result;
+  }
+  getBase64(file) {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.readAsDataURL(file);
+      reader.onload = () => resolve(reader.result);
+      reader.onerror = error => reject(error);
+    });
+  }
+  getInForFromNameFile(namefile){
+    const arr = namefile.split(".");
+    return {
+      licence:arr[0],
+      color:arr[1],
+      type:arr[2],
+    }
   }
 }
 export default new HelperClass();

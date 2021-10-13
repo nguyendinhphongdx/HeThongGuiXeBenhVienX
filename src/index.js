@@ -11,12 +11,9 @@ import { Provider } from 'react-redux'
 import store from './redux/store'
 import 'antd/dist/antd.css';
 import AuthContextProvider from './contexts/auth';
-import { initFacebookSdk } from './helpers/facebook/Facebook_InitSDK';
 
 
-// initFacebookSdk().then(startApp);
 React.icons = icons
-// function startApp(){
   ReactDOM.render(
     <Provider store={store}>
       <AuthContextProvider>

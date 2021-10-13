@@ -2,7 +2,7 @@ import { message } from 'antd';
 import sendRequest from '../../axios/requestAPI';
 import CalendarActions from '../actions/calandarActions';
 import Converter from '../../helpers/converter';
-import { openSuccessNotif } from '../../views/notifications/notif/notifStore';
+import StoreNotif from '../../views/notifications/notif/notifStore';
 class CalanderServices{
     GetDataSchedule = async (dispatch) => {
         const result = await sendRequest('/class/common_schedule', 'get')
@@ -17,7 +17,7 @@ class CalanderServices{
         })
         .catch((error) => {
             message.error({content:error.message,key:'updatable'});
-            //  openSuccessNotif('Thông báo', error.message, 2000, 'error');
+            //  StoreNotif.openSuccessNotif('Thông báo', error.message, 2000, 'error');
         });
     return result;
       }  

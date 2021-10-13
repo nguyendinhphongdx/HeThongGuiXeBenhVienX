@@ -33,7 +33,7 @@ const TheSidebar = () => {
           height={35}
         />
             <span style={{fontSize:18,marginTop:5}}>
-            <span >Khoa Bảng </span> <span style={{color:'red'}}>Academy</span>
+            <span >Bãi Xe Bệnh Viện X</span> <span style={{color:'red'}}></span>
             </span>
         </div>
         <CIcon

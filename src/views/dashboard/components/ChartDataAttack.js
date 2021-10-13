@@ -26,7 +26,7 @@ const ChartDataAttack = ({ data }) => {
       layout: [
         { type: "interval-adjust-position" },
         { type: "interval-hide-overlap" },
-        { type: "adjust-color" },
+        { type: "adjust-color"},
       ],
     },
   };
@@ -57,9 +57,7 @@ const ChartDataAttack = ({ data }) => {
       <CCardBody className="card-body-barchart">
         <Column
           {...config}
-          // onReady={chartInstance => (chart = chartInstance)}
-          // chartRef={ref}
-          />
+        />
       </CCardBody>
     </CCard>
   );

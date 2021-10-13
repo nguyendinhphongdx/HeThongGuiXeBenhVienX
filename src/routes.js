@@ -1,11 +1,5 @@
 import React from 'react';
-import DocumentPage from './views/entity/document';
-import ProfessorPage from './views/entity/professor';
-import StudentPage from './views/entity/student';
-import SubjectPage from './views/entity/subject';
-import ClassPage from './views/entity/_class';
-import ProfilePage from './views/profile';
-import Settings from './views/settings';
+
 
 const Toaster = React.lazy(() => import('./views/notifications/toaster/Toaster'));
 const Tables = React.lazy(() => import('./views/base/tables/Tables'));
@@ -32,7 +26,6 @@ const ButtonGroups = React.lazy(() => import('./views/buttons/button-groups/Butt
 const Buttons = React.lazy(() => import('./views/buttons/buttons/Buttons'));
 const Charts = React.lazy(() => import('./views/charts/Charts'));
 const Dashboard = React.lazy(() => import('./views/dashboard/Dashboard'));
-const CalendarPage = React.lazy(() => import('./views/Calendar/Calendar'));
 const CoreUIIcons = React.lazy(() => import('./views/icons/coreui-icons/CoreUIIcons'));
 const Flags = React.lazy(() => import('./views/icons/flags/Flags'));
 const Brands = React.lazy(() => import('./views/icons/brands/Brands'));
@@ -45,17 +38,25 @@ const Widgets = React.lazy(() => import('./views/widgets/Widgets'));
 const Users = React.lazy(() => import('./views/users/Users'));
 const User = React.lazy(() => import('./views/users/User'));
 const Mobile = React.lazy(() => import('./views/mobile/index.js'));
+
+const DocumentPage = React.lazy(() => import('./views/entity/document')); 
+const ProfessorPage = React.lazy(() => import('./views/entity/professor')); 
+const StudentPage =  React.lazy(() => import('./views/entity/student'));
+const SubjectPage  = React.lazy(() => import('./views/entity/subject'));
+const ClassPage  = React.lazy(() => import('./views/entity/_class'));
+const ProfilePage = React.lazy(() => import('./views/profile'));
+const Settings = React.lazy(() => import('./views/settings'));
+
 const routes = [
   { path: '/', exact: true, name: 'Home' },
   { path: '/dashboard', name: 'Dashboard', component: Dashboard },
-  { path: '/calendar', name: 'Calendar', component: CalendarPage },
   { path: '/profile', name: 'Profile', component: ProfilePage },
   //Entity
-  { path: '/entity/class', name: 'Class', component: ClassPage },
-  { path: '/entity/student', name: 'Student', component: StudentPage },
-  { path: '/entity/professor', name: 'Professor', component: ProfessorPage },
-  { path: '/entity/subject', name: 'Subject', component: SubjectPage },
-  { path: '/entity/document', name: 'Document', component: DocumentPage },
+  { path: '/entity/ticket', name: 'Ticket', component: ClassPage },
+  { path: '/entity/card', name: 'Card', component: StudentPage },
+  { path: '/entity/location', name: 'Location', component: ProfessorPage },
+  { path: '/entity/users', name: 'Staff', component: Users  },
+
   
   { path: '/theme', name: 'Theme', component: Colors, exact: true },
   { path: '/theme/colors', name: 'Colors', component: Colors },
