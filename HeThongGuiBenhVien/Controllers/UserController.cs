@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Dynamic;
 using System.IO;
 using System.Linq;
 using System.Net.Http;
@@ -40,7 +41,11 @@ namespace HeThongGuiBenhVien.Controllers
                 DataTable result = provider.ExecuteProc("sp_dangnhap", nameParams, parames);
                 if (result.Rows.Count > 0)
                 {
-                    return responseUlti.dataObejct(userService.GetNhanVienInRow(result.Rows[0]), "success", 200);
+                    NhanVien nhanvien = userService.GetNhanVienInRow(result.Rows[0]);
+                    dynamic res = new ExpandoObject();
+                    res.user = nhanvien;
+                    res.token = Helper.mockToken();
+                    return responseUlti.dataObject(res, "success", 200);
                 }
                 else throw new Exception("Tai khoản khonng tồn tại");
             }

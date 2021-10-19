@@ -10,8 +10,8 @@ namespace HeThongGuiBenhVien.ultis
 {
     public class SqlProvider
     {
-        //     public static string CnnString = "Data Source=DESKTOP-A6G095M\\SQLEXPRESS;Initial Catalog=HeThongGuiXeBenhVienX;Integrated Security=True";
-        public static string CnnString = "Data Source=VietPDb2\\SQLSERVER;Initial Catalog=HeThongGuiXeBenhVienX;Integrated Security=True";
+             public static string CnnString = "Data Source=DESKTOP-A6G095M\\SQLEXPRESS;Initial Catalog=HeThongGuiXeBenhVienX;Integrated Security=True";
+       // public static string CnnString = "Data Source=VietPDb2\\SQLSERVER;Initial Catalog=HeThongGuiXeBenhVienX;Integrated Security=True";
         public DataTable ExecuteQuery(string query, Object[] parameters = null)
         {
             DataTable data = new DataTable();

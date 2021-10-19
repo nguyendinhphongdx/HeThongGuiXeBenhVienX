@@ -13,7 +13,7 @@ namespace HeThongGuiBenhVien.ultis
         {
             return new ResponseArray(message, status,data);
         }
-        public object dataObejct(object data, string message, int status)
+        public object dataObject(object data, string message, int status)
         {
             return new ResponseObejct(message, status, data);
         }

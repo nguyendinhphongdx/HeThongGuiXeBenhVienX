@@ -48,7 +48,6 @@ namespace HeThongGuiBenhVien.Entities
             this.Matkhaumoi = matkhaumoi;
             this.Matkhaumoi_nhaplai = matkhaumoi_nhaplai;
         }
-
         public ChangePassword()
         {
         }
