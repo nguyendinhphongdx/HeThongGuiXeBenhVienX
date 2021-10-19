@@ -28,6 +28,8 @@ create table tblNhanVien(
 	CONSTRAINT  PK_tblNhanVien primary key (maNhanVien),
 	CONSTRAINT  FK_tblNhanVien_tblVaiTro foreign key (maVaiTro) references tblVaiTro(maVaiTro)
 )
+alter table tblNhanVien
+add email
 create table tblGia(
 	maGia int primary key(maGia) identity(1,1),
 	loaiGui int,
@@ -228,6 +230,13 @@ as
 	begin
 		insert into tblThe values(@makhuvuc,0)
 end
+-- store xóa thẻ
+go 
+create proc sp_xoa_the @mathe int
+as
+	begin
+		delete tblThe where maThe=@mathe
+end
 -- store thêm giá
 go 
  create proc sp_them_gia @loaigui int,@giatien int
@@ -351,3 +360,5 @@ as
 		where maKhuVuc= @khuvuc
 	end
 go 
+
+select * from tblVaiTro
