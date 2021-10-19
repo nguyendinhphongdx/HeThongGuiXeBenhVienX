@@ -15,12 +15,11 @@ import {
 import { Col, message } from "antd";
 import React, { lazy, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import ClassServices from "../../redux/services/ClassServices.js";
-import ProfessorServices from "../../redux/services/ProfessorServices.js";
 import MainChartExample from "../charts/MainChartExample.js";
 import ChartDataAttack from "./components/ChartDataAttack.js";
 import DoughNutChartData from "./components/DoughNutChartData.js";
 import SlideCarosel from "./components/SlideCarosel.js";
+import { datawidget,datadough } from "./mock/data.js";
 import "./styles.scss";
 
 const WidgetsCountData = lazy(() => import("./components/WidgetsCountData"));
@@ -34,14 +33,14 @@ const Dashboard = () => {
   }, [])
   return (
     <div className="page-dashboard">
-      <WidgetsCountData data={[]}/>
+      <WidgetsCountData data={datawidget}/>
       <CRow >
         <CCol xs="8" xl="6">
           <SlideCarosel data={ [] }/>
         </CCol>
         <CCol xs="8" xl="6">
           <div className="wrapper-chart">
-          <ChartDataAttack data={[]}/>
+          <ChartDataAttack/>
           </div>
         </CCol>
       </CRow>
@@ -132,10 +131,10 @@ const Dashboard = () => {
 
       <CRow>
         <CCol xs="12" xl="6">
-          <DoughNutChartData title={'Operations System'} data={[]}/>
+          <DoughNutChartData title={'Operations System'} data={datadough}/>
         </CCol>
         <CCol xs="12" xl="6">
-          <DoughNutChartData title={'Vulnerability'} data={[]}/>
+          <DoughNutChartData title={'Vulnerability'} data={datadough}/>
         </CCol>
       </CRow>
       <CRow>

@@ -32,36 +32,36 @@ const Login = (props) => {
       alert(valid.message);
       setLoading(false);
     } else {
-      // UserService.LoginService(data)
-      //   .then((result) => {
-      //     if (result) {
-      //       const token = result.token || "qwertyuiopasdfghjklzxcvbnm";
-      //       const storage = {
-      //         token,
-      //         currentUser:result.user
-      //       }
-      //       login(storage, history,from);
-      //     }
-      //   })
-      //   .finally(() => {
-      //     setLoading(false);
-      //   })
-            const token =  "qwertyuiopasdfghjklzxcvbnm";
+      UserService.LoginService(data)
+        .then((result) => {
+          if (result) {
+            const token = result.token || "qwertyuiopasdfghjklzxcvbnm";
             const storage = {
               token,
-              currentUser: {
-                "permission": "admin",
-                "_id": "60463f52ce50de4ec21e0a37",
-                "user_name": "root123",
-                "hash_password": "$2b$10$CjA5irSvIu.i98E4OAgmw./X9oqWP4rXUDOjMQzBz3mhoDj1dw6Eu",
-                "phone": "0352337342",
-                "email": "phongnguyendx3@gmail.com",
-                "createdAt": "2021-03-08T15:14:26.515Z",
-                "updatedAt": "2021-03-08T15:14:26.515Z",
-                "__v": 0
-            }
+              currentUser:result.user
             }
             login(storage, history,from);
+          }
+        })
+        .finally(() => {
+          setLoading(false);
+        })
+            // const token =  "qwertyuiopasdfghjklzxcvbnm";
+            // const storage = {
+            //   token,
+            //   currentUser: {
+            //     "permission": "admin",
+            //     "_id": "60463f52ce50de4ec21e0a37",
+            //     "user_name": "root123",
+            //     "hash_password": "$2b$10$CjA5irSvIu.i98E4OAgmw./X9oqWP4rXUDOjMQzBz3mhoDj1dw6Eu",
+            //     "phone": "0352337342",
+            //     "email": "phongnguyendx3@gmail.com",
+            //     "createdAt": "2021-03-08T15:14:26.515Z",
+            //     "updatedAt": "2021-03-08T15:14:26.515Z",
+            //     "__v": 0
+            // }
+            // }
+            // login(storage, history,from);
     }
 
   }

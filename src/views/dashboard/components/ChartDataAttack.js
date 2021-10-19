@@ -4,10 +4,9 @@ import { Button } from "antd";
 import { useEffect, useRef } from "react";
 import { Column } from "@ant-design/charts";
 import { useDispatch, useSelector } from "react-redux";
-import ClassServices from "../../../redux/services/ClassServices";
 
 const ChartDataAttack = ({ data }) => {
-  const barChart = useSelector(state => state.Class.chart);
+  const barChart = [];
   const dispatch = useDispatch();
   const dataConverted = barChart.map(item => {
     return {
@@ -26,7 +25,7 @@ const ChartDataAttack = ({ data }) => {
       layout: [
         { type: "interval-adjust-position" },
         { type: "interval-hide-overlap" },
-        { type: "adjust-color"},
+        { type: "adjust-color" },
       ],
     },
   };
@@ -36,30 +35,30 @@ const ChartDataAttack = ({ data }) => {
     chart?.downloadImage();
     ref.current?.downloadImage();
   };
-  useEffect(()=>{
-    ClassServices.GetDataChartClass(dispatch)
-   },[])
+  useEffect(() => {}, []);
   return (
-   
     <CCard>
-      <CCardHeader>
-        <CCardHeader style={{display:'flex', alignItems:'center',justifyContent:'space-between'}}> <p>Radar Chart</p>  
-        <Button
-          type="primary"
-          style={{ margin: "10px 0" }}
-          onClick={downloadImage}
-        >
-          {" "}
-          Download{" "}
-        </Button></CCardHeader>
-       
-      </CCardHeader>
-      <CCardBody className="card-body-barchart">
-        <Column
-          {...config}
-        />
-      </CCardBody>
-    </CCard>
+        <CCardHeader>
+          Bar Chart
+        </CCardHeader>
+        <CCardBody className="full-heigh">
+          <CChartBar
+            datasets={[
+              {
+                label: 'GitHub Commits',
+                backgroundColor: '#f87979',
+                data: [40, 20, 12, 39, 10, 40, 39, 80, 40, 20, 12, 11]
+              }
+            ]}
+            labels="months"
+            options={{
+              tooltips: {
+                enabled: true
+              }
+            }}
+          />
+        </CCardBody>
+      </CCard>
   );
 };
 export default ChartDataAttack;

@@ -6,7 +6,7 @@ import { QueryAll_User } from "../actions/userActions";
 
 class UserService {
   LoginService = async body => {
-    const result = await sendRequest("/uer/login", "post", body)
+    const result = await sendRequest("/user/login", "post", body)
       .then(result => {
         if (result && result.data) {
           console.log("result.data",result.data);

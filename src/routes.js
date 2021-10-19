@@ -39,11 +39,9 @@ const Users = React.lazy(() => import('./views/users/Users'));
 const User = React.lazy(() => import('./views/users/User'));
 const Mobile = React.lazy(() => import('./views/mobile/index.js'));
 
-const DocumentPage = React.lazy(() => import('./views/entity/document')); 
-const ProfessorPage = React.lazy(() => import('./views/entity/professor')); 
-const StudentPage =  React.lazy(() => import('./views/entity/student'));
-const SubjectPage  = React.lazy(() => import('./views/entity/subject'));
-const ClassPage  = React.lazy(() => import('./views/entity/_class'));
+const MonitorPage = React.lazy(() => import('./views/entity/professor')); 
+const TicketPage =  React.lazy(() => import('./views/entity/student'));
+const LocationPage  = React.lazy(() => import('./views/entity/_class'));
 const ProfilePage = React.lazy(() => import('./views/profile'));
 const Settings = React.lazy(() => import('./views/settings'));
 
@@ -52,9 +50,9 @@ const routes = [
   { path: '/dashboard', name: 'Dashboard', component: Dashboard },
   { path: '/profile', name: 'Profile', component: ProfilePage },
   //Entity
-  { path: '/entity/ticket', name: 'Ticket', component: ClassPage },
-  { path: '/entity/card', name: 'Card', component: StudentPage },
-  { path: '/entity/location', name: 'Location', component: ProfessorPage },
+  { path: '/entity/location', name: 'Location', component: LocationPage },
+  { path: '/entity/ticket', name: 'Monitor', component: TicketPage },
+  { path: '/entity/monitor', name: 'Monitor', component: MonitorPage },
   { path: '/entity/users', name: 'Staff', component: Users  },
 
   

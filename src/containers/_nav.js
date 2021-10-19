@@ -29,8 +29,8 @@ const _nav = [
       },
       {
         _tag: "CSidebarNavItem",
-        name: "Card",
-        to: "/entity/card",
+        name: "Monitor",
+        to: "/entity/monitor",
       },
       {
         _tag: "CSidebarNavItem",

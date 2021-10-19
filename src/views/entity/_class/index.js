@@ -16,7 +16,7 @@ import React, { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import ActionClass from "./components/ActionClass";
 import "./style.scss";
-const ClassPage = () => {
+const LocationPage = () => {
   let locations = [];
   let cards = [];
   const dispatch = useDispatch();
@@ -313,4 +313,4 @@ const ClassPage = () => {
   );
 };
 
-export default ClassPage;
+export default LocationPage;

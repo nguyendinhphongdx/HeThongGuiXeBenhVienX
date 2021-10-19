@@ -1,1 +1,1 @@
-export const SERVER_NODE = 'http://localhost:5000/api'
+export const SERVER_NODE = 'https://localhost:5001/api'

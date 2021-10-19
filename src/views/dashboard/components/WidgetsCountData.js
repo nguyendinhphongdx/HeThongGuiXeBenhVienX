@@ -1,30 +1,18 @@
-import React from "react";
-import {
-  CWidgetDropdown,
-  CRow,
-  CCol,
-  CDropdown,
-  CDropdownMenu,
-  CDropdownItem,
-  CDropdownToggle,
-  CCard,
-  CCardHeader,
-  CCardBody,
-} from "@coreui/react";
 import CIcon from "@coreui/icons-react";
-import ChartLineSimple from "../../charts/ChartLineSimple";
-import ChartBarSimple from "../../charts/ChartBarSimple";
-import { useSelector } from "react-redux";
-import { Card, Carousel, Col, Row } from "antd";
+import {
+  CCol,
+  CDropdown, CDropdownItem, CDropdownMenu, CDropdownToggle, CWidgetDropdown
+} from "@coreui/react";
+import { Carousel, Col, Row } from "antd";
+import React from "react";
 import helpers from "../../../helpers/helpers";
+import ChartBarSimple from "../../charts/ChartBarSimple";
+import ChartLineSimple from "../../charts/ChartLineSimple";
 
 const WidgetsCountData = ({ data }) => {
-  const professors = useSelector(state => state.Professor.professors);
   const listdevided = helpers.devideCard(data);
-
   const randomType = (data, index) => {
-    const professor = professors.find(item => item._id == data.professor[0]);
-    const professorName = professor ? professor.name : "Name Less";
+    const professorName =`Số lượng xe - ${data.value}`;
     var type = 0;
     if (index == 0 || (index % 4 == 0 && index > 4)) {
       type = 0;
@@ -46,7 +34,7 @@ const WidgetsCountData = ({ data }) => {
               className="box"
               color="gradient-primary"
               header={data.name}
-              text={`${professorName} - ${data.member.length}`}
+              text={`${professorName}`}
               children={<h3>abc</h3>}
               footerSlot={
                 <ChartLineSimple
@@ -226,7 +214,7 @@ const WidgetsCountData = ({ data }) => {
   const elementCarousel = listdevided.map((group, index) => {
     const elementItem = group.map((item, index) => {
       return (
-        <Col span={6} key={item._id}>
+        <Col span={6} key={index}>
             {randomType(item, index)}
         </Col>
       );

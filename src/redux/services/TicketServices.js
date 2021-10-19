@@ -1,6 +1,6 @@
 import { message } from "antd";
 import sendRequest from "../../axios/requestAPI";
-import documentActions from "../actions/";
+import TicketAction  from "../actions/ticketActions";
 const key = "updatable";
 class TicketServices {
     async AddTicketServices(dispatch, body) {
@@ -14,7 +14,7 @@ class TicketServices {
     message.loading({ content: "Đang xử lý...", key });
     const request = await sendRequest("/document/upload", "post", form)
       .then(response => {
-        const action = documentActions.Add_Document(response.data[0]);
+        const action = TicketAction.Add_Ticket(response.data[0]);
         dispatch(action);
         return response.data;
       })
@@ -29,11 +29,11 @@ class TicketServices {
     return request;
   }
 
-  async GetDataDocument(dispatch) {
+  async GetDataTicket(dispatch) {
     message.loading({ content: "Đang xử lý...", key });
     const request = await sendRequest("/document/documents", "get")
       .then(response => {
-        const action = documentActions.Get_All_Document(response.data);
+        const action = TicketAction.Get_All_Ticket(response.data);
         dispatch(action);
         return response.data;
       })

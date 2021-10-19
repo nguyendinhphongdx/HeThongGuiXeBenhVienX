@@ -29,3 +29,12 @@
 .col-cus{
     padding:10px
 }
+.card-body>div{
+    height: 100%;
+}
+.card-body.full-heigh>div{
+    height: 100%;
+}
+.card-body.full-heigh canvas{
+    height: 100% !important;
+}
