@@ -1,7 +1,6 @@
 import { Button, Modal, Row, Table } from "antd";
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import SubjectServices from "../../../redux/services/SubjectServices";
 import ActionSubject from "./components/ActionSubject";
 import { FormAddSubject } from "./components/FormAddSubject";
 import './index.scss';
@@ -9,7 +8,7 @@ const SubjectPage = () =>{
     const listSubject = useSelector(state=>state.Subject.subjects)
     const dispatch = useDispatch()
     useEffect(()=>{
-        SubjectServices.GetDataSubject(dispatch)
+       
     },[])
     const [isModalVisible, setIsModalVisible] = useState(false);
     const showModal = () => {

@@ -2,7 +2,6 @@ import { Avatar, List } from "antd";
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import hacker from "../../../assets/images/hacker.png";
-import HistoryServices from "../../../redux/services/HistoryServices";
 export default function History() {
   const data = [
     {
@@ -19,9 +18,8 @@ export default function History() {
     },
   ];
   const dispatch = useDispatch();
-  const historyRedux = useSelector(state => state.History.histories);
+  const historyRedux = [];
   useEffect(() => {
-    HistoryServices.GetDataHistory(dispatch).then(data => {});
   }, []);
   return (
     <div className="HistoryPage">

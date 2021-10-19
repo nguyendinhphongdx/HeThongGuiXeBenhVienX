@@ -3,7 +3,6 @@ import {EditOutlined,DeleteOutlined,WalletOutlined} from '@ant-design/icons';
 import { rowAction } from "../../../../common/variable";
 import { useState } from "react";
 import { useDispatch } from "react-redux";
-import SubjectServices from "../../../../redux/services/SubjectServices";
 
 export default function ActionSubject(props){
     const [visible, setVisible] = useState(false);
@@ -18,7 +17,6 @@ export default function ActionSubject(props){
     
     const {subject} = props;
     const handleDelete = () => {
-      SubjectServices.RemoveSubjectService(dispatch,subject)
     }
     return(
         <div style={rowAction}>

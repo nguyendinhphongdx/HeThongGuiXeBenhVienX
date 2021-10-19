@@ -1,92 +1,188 @@
-import { Button, Card, message, Modal, Row, Table } from "antd";
-import React, { useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import CIcon from "@coreui/icons-react";
+import {
+  CCard,
+  CCardBody,
+  CCardFooter,
+  CCardHeader,
+  CCol,
+  CFormGroup,
+  CInput,
+  CLabel,
+  CRow,
+  CSelect,
+} from "@coreui/react";
+import { Button, message, Row } from "antd";
+import React, { useEffect } from "react";
+import { useDispatch } from "react-redux";
 import ImageComponent from "../../../common/components/image";
 import ProfessorServices from "../../../redux/services/ProfessorServices";
-import ActionFrofessor, { AcitonDetailSubject } from "./components/ActionProfessor";
-import { FormAddProfessor } from "./components/FormAddProfessor";
-import './index.scss';
-const ProfessorPage = () =>{
-    const [isModalVisible, setIsModalVisible] = useState(false);
-    const listProfessor = useSelector(state=>state.Professor.professors);
-    const dispatch = useDispatch();
-    useEffect(()=>{
-        ProfessorServices.GetDataProfessor(dispatch)
-        .then(result => message.destroy())
-    },[])
-    const showModal = () => {
-        setIsModalVisible(true);
-    };
+import ActionFrofessor, {
+  AcitonDetailSubject,
+} from "./components/ActionProfessor";
+import "./index.scss";
 
-    const handleOk = () => {
-        setIsModalVisible(false);
-    };
+const ProfessorPage = () => {
+  const dispatch = useDispatch();
+  let locations = [];
+  let days = [];
+  Array.apply(null, { length: 10 }).map((item, index) => {
+    locations.push({
+      index: index,
+      maKhuVuc: index,
+      tenKhuVuc: `Tên Khu Vực A ${index}`,
+      soLuongToiDa: 20,
+      soLuongHienTai: 0,
+    });
+    const date = new Date();
+    days.push({
+      index: index,
+      key: date.setDate(date.getDate() - index),
+    });
+  });
+  const nameLocation = locations.map((item, index) => {
+    return (
+      <option key={index} value={index}>
+        {item.tenKhuVuc}
+      </option>
+    );
+  });
+  const nameDays = days.map((item, index) => {
+    return (
+      <option key={index} value={item.index}>
+        {new Date(item.key).toLocaleDateString()}
+      </option>
+    );
+  });
+  useEffect(() => {}, []);
 
-    const handleCancel = () => {
-        setIsModalVisible(false);
-    };
-    
-    return(
-        <Card className="tabelPanel">
-        <Row className="add-class">
-            <Button type="primary" onClick={showModal}>Thêm giảng viên</Button>
-        </Row>
-        <Modal title="Thêm giảng viên" visible={isModalVisible} onOk={handleOk} onCancel={handleCancel} footer={null}>
-                <FormAddProfessor callback={handleOk}/>
-        </Modal>
-        <Table style={{border:1}} dataSource={listProfessor} columns={columns}  bordered></Table>
-    </Card>
-    )
-}
+  return (
+    <div className="">
+      <Row className="tabelPanel">
+        <CCol xs="6">
+          <CCard className="table table-full">
+            <CCardHeader className="add-class">
+              <h4>Hệ thống camera giám sát</h4>
+            </CCardHeader>
+            <CCardBody>
+              <CRow>
+                <CCol xs="12">
+                  <CFormGroup>
+                    <CLabel htmlFor="namecard">Tên Khu Vực</CLabel>
+                    <CSelect custom name="namecard" id="namecard">
+                      {nameLocation}
+                    </CSelect>
+                  </CFormGroup>
+                </CCol>
+              </CRow>
+              <CRow>
+                <CCol xs="12">
+                  <CFormGroup>
+                    <CLabel htmlFor="namecard">Ngày ghi nhận</CLabel>
+                    <CSelect custom name="namecard" id="namecard">
+                      {nameDays}
+                    </CSelect>
+                  </CFormGroup>
+                </CCol>
+              </CRow>
+            </CCardBody>
+            <CCardFooter>
+              <div className="footer-button">
+                <Button type="default">Hủy</Button>
+                <Button type="primary">
+                  {" "}
+                  <CIcon name="cil-cursor" />
+                  Tìm kiếm
+                </Button>
+              </div>
+            </CCardFooter>
+          </CCard>
+        
+        </CCol>
+        <CCol xs="6">
+          <CCard className="table table-full">
+            <CCardHeader className="add-class">
+              <h4>Camera 1</h4>
+            </CCardHeader>
+            <CCardBody>
+                <video controls width={'100%'} src="https://s3.eu-central-1.amazonaws.com/pipe.public.content/short.mp4" autoPlay="true" preload="none"></video>
+            </CCardBody>
+          </CCard>
+        </CCol>
+      </Row>
+      <Row className="tabelPanel">
+      <CCol xs="6">
+          <CCard className="table table-full">
+            <CCardHeader className="add-class">
+              <h4>Camera 2</h4>
+            </CCardHeader>
+            <CCardBody>
+            <video controls width={'100%'} src="https://s3.eu-central-1.amazonaws.com/pipe.public.content/short.mp4"  autoPlay="true" preload="none"></video>
+            </CCardBody>
+          </CCard>
+        </CCol>
+        <CCol xs="6">
+          <CCard className="table table-full">
+            <CCardHeader className="add-class">
+              <h4>Camera 3</h4>
+            </CCardHeader>
+            <CCardBody>
+            <video controls width={'100%'} src="https://s3.eu-central-1.amazonaws.com/pipe.public.content/short.mp4" preload="none"></video>
+            </CCardBody>
+          </CCard>
+        </CCol>
+      </Row>
+    </div>
+  );
+};
 export default ProfessorPage;
-const columns =[
-    {
-        title: 'STT',
-        key: 'key',
-        dataIndex:'key',
-        width:'5%'
+const columns = [
+  {
+    title: "STT",
+    key: "key",
+    dataIndex: "key",
+    width: "5%",
+  },
+  {
+    title: "Ảnh đại diện",
+    width: "15%",
+    render: record => <ImageComponent url={record.image} type="professor" />,
+  },
+  {
+    title: "Tên Giảng viên",
+    key: "name",
+    dataIndex: "name",
+    sorter: {
+      compare: (a, b) => a.name.length - b.name.length,
     },
-    {
-        title: 'Ảnh đại diện',
-        width:'15%',
-        render:(record) =><ImageComponent url={record.image} type='professor' />
+    width: "15%",
+  },
+  {
+    title: "Tuổi",
+    key: "age",
+    dataIndex: "age",
+    sorter: {
+      compare: (a, b) => a.age - b.age,
     },
-    {
-        title: 'Tên Giảng viên',
-        key: 'name',
-        dataIndex:'name',
-        sorter: {
-            compare: (a, b) => a.name.length - b.name.length
-          },
-        width:'15%'
-    },
-    {
-        title: 'Tuổi',
-        key: 'age',
-        dataIndex:'age',
-        sorter: {
-            compare: (a, b) => a.age - b.age
-          },
-        width:'10%'
-    },
-    {
-        title: 'Môn học',
-        key: 'operation',
-        dataIndex:'subject',
-        render:(record)=> <AcitonDetailSubject record={record}/>,
-        width:'10%'
-    },
-    {
-        title: 'Email',
-        key: 'email',
-        dataIndex:'email',
-        width:'15%',
-    },
-   
-    {
-        title: 'Tác động',
-        key: 'operation',
-        width: '15%',
-        render:(record)=> <ActionFrofessor record={record}/>
-    }
+    width: "10%",
+  },
+  {
+    title: "Môn học",
+    key: "operation",
+    dataIndex: "subject",
+    render: record => <AcitonDetailSubject record={record} />,
+    width: "10%",
+  },
+  {
+    title: "Email",
+    key: "email",
+    dataIndex: "email",
+    width: "15%",
+  },
+
+  {
+    title: "Tác động",
+    key: "operation",
+    width: "15%",
+    render: record => <ActionFrofessor record={record} />,
+  },
 ];

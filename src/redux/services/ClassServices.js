@@ -1,14 +1,14 @@
 import { message } from "antd";
 import sendRequest from "../../axios/requestAPI";
 import helpers from "../../helpers/helpers";
-import classActions from "../actions/classActions";
+import staffActions from "../actions/staffActions";
 const key='updatable'
-class ClassServices{
+class StaffServices{
     async GetDataClass(dispatch){
         const request = await sendRequest('/class/classes','get')
         .then(response =>{
             if(response.status == 200){
-                const action = classActions.Get_All_Class(response.data || [])
+                const action = staffActions.Get_All_Staff(response.data || [])
                 dispatch(action);
                 return 'success'
             }else{
@@ -125,4 +125,4 @@ class ClassServices{
         return request
     }
 }
-export default new ClassServices();
+export default new StaffServices();

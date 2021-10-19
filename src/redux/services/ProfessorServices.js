@@ -1,7 +1,7 @@
 import { message } from "antd";
 import sendRequest from "../../axios/requestAPI";
 import helpers from "../../helpers/helpers";
-import professorActions from "../actions/professorActions";
+import professorActions from "../actions/locationActions";
 const key='updatable'
 class ProfessorServices{
     async GetDataProfessor(dispatch){

@@ -1,6 +1,6 @@
 import { message } from "antd";
 import sendRequest from "../../axios/requestAPI";
-import studentActions from "../actions/studentActions";
+import studentActions from "../actions/ticketActions";
 const key = "updatable";
 class StudentServices {
     async GetDataStudent(dispatch) {

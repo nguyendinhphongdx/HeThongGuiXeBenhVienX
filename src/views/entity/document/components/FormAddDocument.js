@@ -3,7 +3,7 @@ import { Button, Col, Form, Input, Row, Select, Switch, Upload } from "antd";
 import TextArea from "antd/lib/input/TextArea";
 import { useState } from "react";
 import { useDispatch } from "react-redux";
-import DocumentServices from '../../../../redux/services/DocumentServices';
+import DocumentServices from '../../../../redux/services/TicketServices';
 import { styleColumnModal, styleRowModal, styleRowModalAction, styleRowUploadAvatar } from "../../../../common/variable";
 
 export function FormAddDocument(props){

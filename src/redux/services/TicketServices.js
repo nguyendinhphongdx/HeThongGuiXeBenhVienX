@@ -1,9 +1,9 @@
 import { message } from "antd";
 import sendRequest from "../../axios/requestAPI";
-import documentActions from "../actions/documentActions";
+import documentActions from "../actions/";
 const key = "updatable";
-class DocumentServices {
-    async AddDocumentService(dispatch, body) {
+class TicketServices {
+    async AddTicketServices(dispatch, body) {
     const form = new FormData();
     form.append("file", body.file);
     form.append("title", body.title);
@@ -44,4 +44,4 @@ class DocumentServices {
     return request;
   }
 }
-export default new DocumentServices();
+export default new TicketServices();

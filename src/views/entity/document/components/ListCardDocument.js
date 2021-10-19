@@ -1,7 +1,7 @@
 import { List } from 'antd';
 import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import DocumentServices from '../../../../redux/services/DocumentServices';
+import DocumentServices from '../../../../redux/services/TicketServices';
 import CardUpload from './CardUpDocument';
 export default function ListCardDocument(){
     const documentRedux = useSelector(state=>state.Document.documents)

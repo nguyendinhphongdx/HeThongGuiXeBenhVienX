@@ -2,7 +2,6 @@ import { Button, Col, Form, Input, Row, Select } from "antd";
 import TextArea from "antd/lib/input/TextArea";
 import { useDispatch } from "react-redux";
 import { styleRowModal, styleRowModalAction,styleColumnModal } from "../../../../common/variable";
-import SubjectServices from "../../../../redux/services/SubjectServices";
 
 export function FormAddSubject(props){
     const [form] = Form.useForm();
@@ -11,12 +10,7 @@ export function FormAddSubject(props){
         form.resetFields();
       };
     const handleOnClickAdd=(data)=>{
-        SubjectServices.AddSubjectService(dispatch,data)
-        .then((result) =>{
-            if(result==='success'){
-                props.callback(false);
-            }
-        })
+     
     }
     return(
              <Form onFinish={handleOnClickAdd} form={form}>
