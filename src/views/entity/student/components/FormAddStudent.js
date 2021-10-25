@@ -4,7 +4,7 @@ import TextArea from "antd/lib/input/TextArea";
 import { useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { styleColumnModal, styleRowModal, styleRowModalAction, styleRowUploadAvatar } from "../../../../common/variable";
-import StudentServices from '../../../../redux/services/StudentServices';
+import StudentServices from '../../../../redux/services/CardServices';
 export function FormAddStudent(props){
     const {callback} = props;
     const [form] = Form.useForm();

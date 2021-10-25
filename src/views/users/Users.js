@@ -1,31 +1,20 @@
-import React, { useState, useEffect } from "react";
 import CIcon from "@coreui/icons-react";
-import { useHistory, useLocation } from "react-router-dom";
 import {
-  CBadge,
   CCard,
-  CCardBody,
-  CCardHeader,
-  CCol,
-  CDataTable,
-  CRow,
-  CPagination,
-  CLabel,
-  CInput,
-  CFormGroup,
-  CSelect,
-  CCardFooter,
+  CCardBody, CCardFooter, CCardHeader,
+  CCol, CFormGroup, CInput, CLabel, CRow
 } from "@coreui/react";
-
-import usersData from "./UsersData";
-import UserServices from "../../redux/services/UserServices";
-import { useDispatch, useSelector } from "react-redux";
-import { Button, Card, message, Popconfirm, Row,Table } from "antd";
+import { Button, Card, message, Row, Table } from "antd";
 import { useForm } from "antd/lib/form/Form";
+import React, { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { useHistory, useLocation } from "react-router-dom";
 import { ValidateFormRegistry } from "../../helpers/validateForm";
-import HelperClass from "../../helpers/helpers";
-import StoreNotif from "../notifications/notif/notifStore";
+import RoleServices from "../../redux/services/RoleServices";
+import StaffServices from "../../redux/services/StaffServices";
 import ActionClass from "../entity/_class/components/ActionClass";
+import StoreNotif from "../notifications/notif/notifStore";
+
 
 const Users = () => {
   const history = useHistory();
@@ -34,27 +23,21 @@ const Users = () => {
   const queryPage = useLocation().search.match(/page=([1-9]+)/, "");
   const currentPage = Number(queryPage && queryPage[1] ? queryPage[1] : 1);
   const [userSelected,setUserSelected] = useState(null);
-  let userRedux = [];
-  Array.apply(null,{length:10}).map((item,index)=>{
-    const role = index%2==0?'soát vé':'kiểm toán';
-    userRedux.push({
-      index:index,
-      maNhanVien:`Mã Nhân Viên ${index}`,
-      tenNhanVien:`Tên Nhân Viên ${index}`,
-      tuoi:20,
-      soDienThoai:'0352337342',
-      vaiTro:role
-    })
+  let userRedux =  useSelector(state => state.Staff.staffs);
+  let rolesRedux =  useSelector(state => state.Role.roles);
+  const userConverted = userRedux.map(item =>{
+    const findRole = rolesRedux.find(role => role.mavaitro === item.mavaitro)
+    return {
+      ...item,
+      tenvaitro:findRole?findRole.tenvaitro:'unknow'
+    }
   })
   const selectUser = (user) =>{
-    setUserSelected(user)
+    setUserSelected(user);
   }
   const handleOnChangeInputUser = (e,type)=>{
 
   }
-  const nameCurrent = JSON.parse(
-    localStorage.getItem("currentUser") || "{}"
-  ).username;
 
   const handleSubmit = values => {
     if (values.password != values.repeat) {
@@ -73,7 +56,8 @@ const Users = () => {
   };
 
   useEffect(() => {
-   
+    StaffServices.GetDataStaff(dispatch);
+    RoleServices.GetAllRoles(dispatch);
   }, []);
   
   const columnsUser = [
@@ -103,14 +87,14 @@ const Users = () => {
   },
   {
     title: "Số Điện Thoại",
-    key: "soDienThoai",
-    dataIndex: "soDienThoai",
+    key: "sodienthoai",
+    dataIndex: "sodienthoai",
     width: "15%",
 },
 {
   title: "Vai Trò",
-  key: "vaiTro",
-  dataIndex: "vaiTro",
+  key: "tenvaitro",
+  dataIndex: "tenvaitro",
   width: "15%",
 },
     {
@@ -134,7 +118,7 @@ const Users = () => {
           </Row>
           <Table
             style={{ border: 1 }}
-            dataSource={userRedux}
+            dataSource={userConverted}
             columns={columnsUser}
             bordered
             pagination={{ pageSize: 4 }}
@@ -191,7 +175,7 @@ const Users = () => {
                     name="phone"
                     id="phone"
                     disabled
-                    value={userSelected ? userSelected.tuoi : null}
+                    value={userSelected ? userSelected.sodienthoai : null}
                     onChange={e => handleOnChangeInputUser(e, "phone")}
                     placeholder="Phone Number"
                   />

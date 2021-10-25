@@ -1,7 +1,7 @@
 import { Button, Col, Form, Input, Row, Select } from "antd";
 import { useState } from "react";
 import { useDispatch } from "react-redux";
-import StudentServices from "../../../../redux/services/StudentServices";
+import StudentServices from "../../../../redux/services/CardServices";
 import { styleColumnModal, styleRowModal, styleRowModalAction } from "../../../../common/variable";
 
 export default function FormGradeMark(props){

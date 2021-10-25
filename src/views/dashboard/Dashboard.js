@@ -1,9 +1,7 @@
 import CIcon from "@coreui/icons-react";
 import {
-  CBadge,
   CButton,
   CButtonGroup,
-  CCallout,
   CCard,
   CCardBody,
   CCardFooter,
@@ -12,35 +10,40 @@ import {
   CProgress,
   CRow,
 } from "@coreui/react";
-import { Col, message } from "antd";
 import React, { lazy, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import LocationServices from "../../redux/services/LocationServices.js";
+import StaffServices from "../../redux/services/StaffServices.js";
 import MainChartExample from "../charts/MainChartExample.js";
 import ChartDataAttack from "./components/ChartDataAttack.js";
 import DoughNutChartData from "./components/DoughNutChartData.js";
 import SlideCarosel from "./components/SlideCarosel.js";
-import { datawidget,datadough } from "./mock/data.js";
+import { datadough, datawidget } from "./mock/data.js";
 import "./styles.scss";
 
 const WidgetsCountData = lazy(() => import("./components/WidgetsCountData"));
 
 const Dashboard = () => {
   const store = useSelector(state => state);
-  console.log('STORE APP',store);
+  const locations = useSelector(state => state.Location.locations);
+  console.log("STORE APP", store);
   const dispatch = useDispatch();
   useEffect(() => {
-    
-  }, [])
+    Promise.all([
+      StaffServices.GetDataStaff(dispatch),
+      LocationServices.GetDataLocation(dispatch),
+    ]);
+  }, []);
   return (
     <div className="page-dashboard">
-      <WidgetsCountData data={datawidget}/>
-      <CRow >
+      <WidgetsCountData data={locations} />
+      <CRow>
         <CCol xs="8" xl="6">
-          <SlideCarosel data={ [] }/>
+          <SlideCarosel data={[]} />
         </CCol>
         <CCol xs="8" xl="6">
           <div className="wrapper-chart">
-          <ChartDataAttack/>
+            <ChartDataAttack />
           </div>
         </CCol>
       </CRow>
@@ -131,10 +134,10 @@ const Dashboard = () => {
 
       <CRow>
         <CCol xs="12" xl="6">
-          <DoughNutChartData title={'Operations System'} data={datadough}/>
+          <DoughNutChartData title={"Operations System"} data={datadough} />
         </CCol>
         <CCol xs="12" xl="6">
-          <DoughNutChartData title={'Vulnerability'} data={datadough}/>
+          <DoughNutChartData title={"Vulnerability"} data={datadough} />
         </CCol>
       </CRow>
       <CRow>

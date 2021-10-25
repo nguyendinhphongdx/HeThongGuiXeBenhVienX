@@ -1,7 +1,7 @@
 import { Button, Col, DatePicker, Form, Input, Row, Select, TimePicker } from "antd";
 import { useDispatch, useSelector } from "react-redux";
 import { styleColumnModal, styleRowModal, styleRowModalAction } from "../../../../common/variable";
-import ClassSerivces from '../../../../redux/services/ClassServices';
+import ClassSerivces from '../../../../redux/services/StaffServices';
 export function FormAddClass(props){
     const [form] = Form.useForm();
     const {callback} = props;

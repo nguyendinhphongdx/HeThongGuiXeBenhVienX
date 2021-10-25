@@ -13,15 +13,24 @@ import {
 } from "@coreui/react";
 import { Button, Card, Row, Table } from "antd";
 import React, { useEffect, useState } from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import CardServices from "../../../redux/services/CardServices";
+import LocationServices from "../../../redux/services/LocationServices";
 import ActionClass from "./components/ActionClass";
 import "./style.scss";
 const LocationPage = () => {
-  let locations = [];
-  let cards = [];
+  let locations = useSelector(state => state.Location.locations);
+  let cards = useSelector(state => state.Card.cards);
   const dispatch = useDispatch();
   const [locationSelected, setLocationSelected] = useState(null);
   const [cardSelected, setCardSelected] = useState(null);
+  const cardConverted = cards.map(item => {
+    const cardx = locations.find(l => l.maKhuVuc === item.makhuvuc);
+    return {
+      ...item,
+      tenkhuvuc:cardx.tenKhuVuc
+    }
+  })
   const handleOnChangeInputLocation = (name, type) => {
     if ((type = "name")) {
       setLocationSelected({
@@ -50,21 +59,10 @@ const LocationPage = () => {
   const selectCard = card => {
     setCardSelected(card);
   };
-  useEffect(() => {}, []);
-  Array.apply(null, { length: 10 }).map((item, index) => {
-    locations.push({
-      index: index,
-      maKhuVuc: index,
-      tenKhuVuc: `Tên Khu Vực A ${index}`,
-      soLuongToiDa: 20,
-      soLuongHienTai: 0,
-    });
-    cards.push({
-      index: index,
-      maThe: `Mã Thẻ ${index}`,
-      tenKhuVuc:`Tên Khu Vực ${index}`
-    });
-  });
+  useEffect(() => { 
+    LocationServices.GetDataLocation(dispatch)
+    CardServices.GetDataCard(dispatch)
+  }, []);
   const nameLocation = locations.map((item, index) => {
     return (
       <option key={index} value={index}>
@@ -72,6 +70,10 @@ const LocationPage = () => {
       </option>
     );
   });
+  const resetFormCard = () =>{
+    setCardSelected(null)
+    console.log(cardSelected);
+  }
   const columnsLocation = [
     {
       title: "STT",
@@ -91,8 +93,8 @@ const LocationPage = () => {
     },
     {
       title: "Tên Khu Vực",
-      key: "maKhuVuc",
-      dataIndex: "maKhuVuc",
+      key: "tenKhuVuc",
+      dataIndex: "tenKhuVuc",
       width: "15%",
     },
     {
@@ -130,19 +132,25 @@ const LocationPage = () => {
     },
     {
       title: "Mã Thẻ",
-      key: "maThe",
-      dataIndex: "maThe",
+      key: "mathe",
+      dataIndex: "mathe",
       sorter: {
-        compare: (a, b) => a.subject.length - b.subject.length,
+        compare: (a, b) => a.mathe - b.mathe,
         multiple: 3,
       },
       width: "15%",
     },
     {
         title: "Tên Khu Vực",
-        key: "tenKhuVuc",
-        dataIndex: "tenKhuVuc",
+        key: "tenkhuvuc",
+        dataIndex: "tenkhuvuc",
         width: "15%",
+    },
+    {
+      title: "Trạng thái",
+      key: "trangthai",
+      dataIndex: "trangthai",
+      width: "15%",
     },
     {
       title: "Tác động",
@@ -258,7 +266,7 @@ const LocationPage = () => {
           </Row>
           <Table
             style={{ border: 1 }}
-            dataSource={cards}
+            dataSource={cardConverted}
             columns={columnsCard}
             pagination={{ pageSize: 4 }}
             bordered
@@ -286,20 +294,24 @@ const LocationPage = () => {
               <CCol xs="4">
                 <CFormGroup>
                   <CLabel htmlFor="name">Mã Thẻ</CLabel>
-                  <CInput id="name" placeholder="Code Location" disabled />
+                  <CInput id="name" placeholder="Code Location" disabled 
+                   value={cardSelected?cardSelected.mathe:null}
+                  />
                 </CFormGroup>
               </CCol>
               <CCol xs="8">
                 <CFormGroup>
                   <CLabel htmlFor="ccnumber">Tình Trạng</CLabel>
-                  <CInput id="ccnumber" placeholder="Status" disabled />
+                  <CInput id="ccnumber" placeholder="Status" disabled 
+                   value={cardSelected?cardSelected.trangthai:null}
+                  />
                 </CFormGroup>
               </CCol>
             </CRow>
           </CCardBody>
           <CCardFooter>
             <div className="footer-button">
-              <Button type="default">Hủy</Button>
+              <Button type="default" onClick={resetFormCard}>Hủy</Button>
               <Button type="primary">
                 {" "}
                 <CIcon name="cil-cursor" />

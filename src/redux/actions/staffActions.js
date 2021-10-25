@@ -13,5 +13,11 @@ class StaffAction{
             payload: staff,
           };
     }
+    Update_Staff(staff){
+        return {
+            type: StaffConstant.UPDATE_SATFF,
+            payload: staff,
+          };
+    }
 }
 export default new StaffAction();

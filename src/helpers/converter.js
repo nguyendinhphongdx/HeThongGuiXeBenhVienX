@@ -21,33 +21,7 @@ class ServiceConverter{
         })
         return ret
     }
-    ConvertObjectToArray = (object) => {
-        const keys = Object.keys(object || {});
-        const values = Object.values(object || {});
-        return keys.map((key, index) => {
-            return {
-                key: key,
-                value: values[index]
-            }
-        })
-    }
-    ConvertWithoutOrigin = (object) => {
-        const config = object.origin.config[`${object.Method}`];
-        return {
-            key: object.origin.Id || 0,
-            endpoint: object.Endpoint,
-            method: object.Method,
-            id: object.origin.Id || 0,
-            method_direct: object.Redirect_Method,
-            url: object.URL,
-            body: config.body,
-            header: config.header,
-            params: config.params,
-            typebody:config.typebody,
-            auth: this.DecodeAuthorization(config.Authorization)
-        }
-        
-    }
+ 
     EncodeAuthorization = (object) => {
         if (object.type === 'Bear') {
             return `Bear ${object.token}`
@@ -80,50 +54,60 @@ class ServiceConverter{
             return {}
         }
     }
-    convertCountAllData = (object)=>{
-        return {
-            attack:Helper.addFieldColorRandom(object.attack?object.attack.count:[]),
-            os:Helper.addFieldColorRandom(object.os?object.os.count:[]),
-            warnning:Helper.CountPercent(object.warnning?object.warnning.count:[],false),
-            violate:object.violate?object.violate.count:[],
-            vulnerability: Helper.addFieldColorRandom(Helper.CountPercent(object.vulnerability?object.vulnerability.count:[],false)),
-        }
-    }
-    convertCountData = (data)=>{
-        return data.map((item,index) =>{
-            return {
-            key:index,
-            image:  SERVER_NODE+'/static'+(item.image || '/news/nature2.jpg'),
-            title: item.key,
-            task: Helper.numFormatter(item.value)+'',
-            des: item.unit
-            }
-        })
-    }
-    convertFeaturedNews=(featured)=>{
-        return featured.map((item,index) =>{
-            return {
-            key:index,
-            image:  (item.image || '/news/nature2.jpg'),
-            title: item.title,
-            link:item.link,
-            author:item.author,
-            des: item['content:encoded'].__cdata,
-            time:item.pubDate
-            }
-        })
-    }
-    convertConfigFile=(config)=>{
-        return config
-    }
+  
     convertUsers=(users)=>{
-        const _users = users.map(item => {
+        return users.map((item,index)=>{
             return {
                 ...item,
-                hidePass:'*********'
+                index:index,
+                maNhanVien:`Nhân Viên ${item.manv}`,
+                tenNhanVien:`${item.tennv}`,
+                tuoi:item.tuoi,
+                soDienThoai:item.sdt || '0352337342'
             }
         })
-        return _users;
+    }
+    convertLocation = (arr) =>{
+        return arr.map((item,index)=>{
+            return {
+                  index: index,
+                  maKhuVuc: item.makhuvuc,
+                  tenKhuVuc: `Khu Vực  ${item.tenkhuvuc}`,
+                  soLuongToiDa: item.soluongtoida,
+                  soLuongHienTai: item.soluonghientai
+            }
+        })
+    }
+    convertCard = (arr) =>{
+        return arr.map((item,index)=>{
+            return {
+                index: index,
+                ...item,
+                trangthai: item.tinhtrang?'đang được sử dụng':'chưa được sử dụng'
+            }
+        })
+    }
+    convertTicket = (arr) =>{
+        return arr.map((item,index)=>{
+            return {
+                index: index,
+                ...item,
+                start:item.thoigianbatdau,
+                end:item.thoigianketthuc,
+                thoigianbatdau:new Date(item.thoigianbatdau).toLocaleDateString() +' - '+new Date(item.thoigianbatdau).toLocaleTimeString(),
+                thoigianketthuc:new Date(item.thoigianketthuc).toLocaleDateString() +' - '+new Date(item.thoigianketthuc).toLocaleTimeString(),
+            }
+        })
+    }
+    convertPrice = (arr) =>{
+        return arr.map((item,index)=>{
+            return {
+                index: index,
+                ...item,
+                maGia:`Mã giá ${item.magia}`,
+                loaiGui:`${item.loaiGui} Ngày`
+            }
+        })
     }
 }
 export default new ServiceConverter();

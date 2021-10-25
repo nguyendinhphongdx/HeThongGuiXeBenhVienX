@@ -163,5 +163,19 @@ class HelperClass {
       type:arr[2],
     }
   }
+  getDateInputDate(time){
+    const date = new Date(time);
+    let month =
+        date.getMonth() < 9 ? "0" + (date.getMonth() + 1) : date.getMonth() + 1,
+      day = date.getDate() < 10 ? "0" + date.getDate() : date.getDate();
+    let dateNow = date.getFullYear() + "-" + month + "-" + day;
+    return dateNow;
+  }
+  getTimeInputTime(time){
+    const date = new Date(time);
+    const timeNow = date.getHours() < 10?`0${date.getHours()}`:date.getHours();
+    const minuteNow = date.getMinutes() < 10?`0${date.getMinutes()}`:date.getMinutes();
+    return timeNow +":"+minuteNow;
+  }
 }
 export default new HelperClass();

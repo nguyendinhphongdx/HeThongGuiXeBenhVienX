@@ -6,7 +6,7 @@ import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import convertKB from "../../../../helpers/convertKB";
 import HelperClass from "../../../../helpers/helpers";
-import MessageServices from "../../../../redux/services/MessageServices";
+import MessageServices from "../../../../redux/services/PriceServices";
 import ImageComponent from "../../../../common/components/image";
 import { SERVER_NODE } from "../../../../axios/configAPI";
 import socketIo from "../../../../socket.io";

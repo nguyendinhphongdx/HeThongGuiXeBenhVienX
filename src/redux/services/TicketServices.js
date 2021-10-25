@@ -1,5 +1,6 @@
 import { message } from "antd";
 import sendRequest from "../../axios/requestAPI";
+import converter from "../../helpers/converter";
 import TicketAction  from "../actions/ticketActions";
 const key = "updatable";
 class TicketServices {
@@ -31,9 +32,9 @@ class TicketServices {
 
   async GetDataTicket(dispatch) {
     message.loading({ content: "Đang xử lý...", key });
-    const request = await sendRequest("/document/documents", "get")
+    const request = await sendRequest("/ticket/queryAll", "get")
       .then(response => {
-        const action = TicketAction.Get_All_Ticket(response.data);
+        const action = TicketAction.Get_All_Ticket(converter.convertTicket(response.data));
         dispatch(action);
         return response.data;
       })

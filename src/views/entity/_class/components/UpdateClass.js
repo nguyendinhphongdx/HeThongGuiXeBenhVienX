@@ -3,7 +3,7 @@ import { useDispatch } from "react-redux";
 import moment from 'moment';
 import { styleColumnModal, styleRowModal, styleRowModalAction } from "../../../../common/variable";
 import { validateClass } from "../../../../helpers/validateForm";
-import ClassServices from "../../../../redux/services/ClassServices";
+import ClassServices from "../../../../redux/services/StaffServices";
 export function UpdateClass(props){
     const [form] = Form.useForm();
     const {record,callback,state} = props;

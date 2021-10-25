@@ -35,4 +35,13 @@ export const TicketConstant = {
 export const StaffConstant = {
   GET_DATA_STAFF:"GET_DATA_STAFF",
   ADD_STAFF:"ADD_STAFF",
+  UPDATE_SATFF:"UPDATE_SATFF"
+}
+export const PriceConstant = {
+  GET_DATA_PRICE:"GET_DATA_PRICE",
+  ADD_PRICE:"ADD_PRICE"
+}
+export const RoleConstant = {
+  GET_DATA_ROLE:"GET_DATA_ROLE",
+  ADD_ROLE:"ADD_ROLE"
 }

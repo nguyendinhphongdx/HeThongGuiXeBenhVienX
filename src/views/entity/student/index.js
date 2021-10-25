@@ -12,43 +12,51 @@ import {
   CRow,
   CSelect,
 } from "@coreui/react";
-import { Button, Card, Image, Row, Table, Upload } from "antd";
+import {
+  Button,
+  Card,
+  Image,
+  message,
+  Popconfirm,
+  Row,
+  Table,
+  Upload,
+} from "antd";
 import React, { useEffect, useState } from "react";
 import ActionClass from "../_class/components/ActionClass";
 import "./index.scss";
 import helpers from "../../../helpers/helpers";
+import TicketServices from "../../../redux/services/TicketServices";
+import { useDispatch, useSelector } from "react-redux";
+import PriceServices from "../../../redux/services/PriceServices";
+import UserServices from "../../../redux/services/UserServices";
+import StaffServices from "../../../redux/services/StaffServices";
 const StudentPage = () => {
+  const dispatch = useDispatch();
   const [ticketSelected, setTicketSelected] = useState(null);
+  const [ticketSubmit,setTicketSubmit] = useState(null);
   const [base64Image, setBase64Image] = useState(null);
-  const tickets = [];
-  const prices = [];
+  const tickets = useSelector(state => state.Ticket.tickets);
+  const prices = useSelector(state => state.Price.prices);
+  const staffs = useSelector(state => state.Staff.staffs);
+  const ticketConverted = tickets.map(item => {
+    const findnv = staffs.find(item => item.manv === item.manv);
+    const findprice = prices.find(item => item.magia === item.magia);
+    return {
+      ...item,
+      nhanvienlap: findnv ? findnv.tennv : "unknown",
+      dongia: findprice ? findprice.giaTien : "unknown",
+    };
+  });
   const selectTicket = ticket => {
     window.scrollTo({
-      top:0,left:0,behavior:"smooth"
-    })
+      top: 0,
+      left: 0,
+      behavior: "smooth",
+    });
+    console.log(ticket);
     setTicketSelected(ticket);
   };
-  Array.apply(null, { length: 10 }).map((item, index) => {
-    tickets.push({
-      index: index,
-      maThe: "Ma The " + index,
-      bienSo: `29y3-07832`,
-      loaiXe: "Winner",
-      mauXe: "BLACK",
-      thoiGianBatDau:
-        new Date().toLocaleDateString() + "-" + new Date().toLocaleTimeString(),
-      thoiGianKetThuc:
-        new Date().toLocaleDateString() + "-" + new Date().toLocaleTimeString(),
-      nhanVienLap: "Nhân Viên " + index,
-      donGia: 20000,
-    });
-    prices.push({
-      index: index,
-      maGia: "Ma Gía " + index,
-      loaiGui: 15 + index + " Ngày",
-      giaTien: 5000 + index * 1000,
-    });
-  });
   const toggleLaser = () => {
     document.getElementById("laser").classList.toggle("active");
     document.getElementById("box-image").classList.toggle("blur");
@@ -60,27 +68,75 @@ const StudentPage = () => {
   const scanImage = name => {
     toggleLaser();
     const object = helpers.getInForFromNameFile(name);
+    console.log(object);
     setTimeout(() => {
       setTicketSelected({
-        bienSo: object.licence,
-        mauXe: object.color,
-        loaiXe: object.type,
+        bienso: object.licence,
+        mauxe: object.color,
+        loaixe: object.type,
       });
     }, 2000);
   };
-  const handleOnChangeInputTikcet = (e, type) => {};
+  const typeSend = prices.map((item, index) => {
+    return (
+      <option key={index} value={item.magia}>
+        {item.loaiGui}
+      </option>
+    );
+  });
+  const staffOptions = staffs.map((item, index) => {
+    return (
+      <option key={index} value={item.manv}>
+        {item.tennv}
+      </option>
+    );
+  });
+  const handleOnChangeInputTikcet = (e, type) => {
+    console.log(e.target.value);
+      switch(type){
+        case 'code':setTicketSelected({
+          ...ticketSelected,
+          mathe:e.target.value
+        }); break;
+        case 'licence':setTicketSelected({
+          ...ticketSelected,
+          bienso:e.target.value
+        }); break;
+        case 'type':setTicketSelected({
+          ...ticketSelected,
+          loaixe:e.target.value
+        }); break;
+        case 'color':setTicketSelected({
+          ...ticketSelected,
+          mauxe:e.target.value
+        }); break;
+        case 'timeStart':setTicketSelected({
+          ...ticketSelected,
+          start:e.target.value
+        }); break;
+        
+      }
+  };
   const onChangeFile = info => {
     if (info.fileList && info.fileList[0]) {
       setTimeout(() => {
         setBase64Image(info.fileList[0].thumbUrl);
-        console.log("=====>>>> Log",info.fileList[0].thumbUrl);
+        console.log("=====>>>> Log", info.fileList[0].thumbUrl);
         scanImage(info.fileList[0].name);
       }, 1000);
     } else {
       setBase64Image(null);
     }
   };
-  useEffect(() => {}, []);
+  const handleSubmit = () =>{
+    console.log({...ticketSelected,...ticketSubmit});
+  }
+  useEffect(() => {
+    TicketServices.GetDataTicket(dispatch);
+    PriceServices.GetAllPrices(dispatch);
+    StaffServices.GetDataStaff(dispatch);
+  }, []);
+
   const columnTickets = [
     {
       title: "STT",
@@ -90,54 +146,54 @@ const StudentPage = () => {
     },
     {
       title: "Mã Thẻ",
-      key: "maThe",
-      dataIndex: "maThe",
+      key: "mathe",
+      dataIndex: "mathe",
       sorter: {
-        compare: (a, b) => a.subject.length - b.subject.length,
+        compare: (a, b) => a.submathe - b.mathe,
         multiple: 3,
       },
       width: "10%",
     },
     {
       title: "Biển Số",
-      key: "bienSo",
-      dataIndex: "bienSo",
+      key: "bienso",
+      dataIndex: "bienso",
       width: "10%",
     },
     {
       title: "Màu Xe",
-      key: "mauXe",
-      dataIndex: "mauXe",
+      key: "mauxe",
+      dataIndex: "mauxe",
       width: "8%",
     },
     {
       title: "Loại Xe",
-      key: "loaiXe",
-      dataIndex: "loaiXe",
+      key: "loaixe",
+      dataIndex: "loaixe",
       width: "10%",
     },
     {
       title: "Bắt Đầu",
-      key: "thoiGianBatDau",
-      dataIndex: "thoiGianBatDau",
+      key: "thoigianbatdau",
+      dataIndex: "thoigianbatdau",
       width: "15%",
     },
     {
       title: "Kết Thúc",
-      key: "thoiGianKetThuc",
-      dataIndex: "thoiGianKetThuc",
+      key: "thoigianketthuc",
+      dataIndex: "thoigianketthuc",
       width: "15%",
     },
     {
       title: "Nhân Viên Lập",
-      key: "nhanVienLap",
-      dataIndex: "nhanVienLap",
+      key: "nhanvienlap",
+      dataIndex: "nhanvienlap",
       width: "10%",
     },
     {
       title: "Đơn giá / lượt",
-      key: "donGia",
-      dataIndex: "donGia",
+      key: "dongia",
+      dataIndex: "dongia",
       width: "10%",
     },
     {
@@ -146,11 +202,10 @@ const StudentPage = () => {
       width: "20%",
       render: record => (
         <div className="">
-          <a href="top-info">go</a>
           <ActionClass
-          onEdit={() => selectTicket(record)}
-          onDelete={() => console.log("delete")}
-        />
+            onEdit={() => selectTicket(record)}
+            onDelete={() => console.log("delete")}
+          />
         </div>
       ),
     },
@@ -186,11 +241,10 @@ const StudentPage = () => {
       width: "20%",
       render: record => (
         <div className="">
-          
           <ActionClass
-          onEdit={() => selectTicket(record)}
-          onDelete={() => console.log("delete")}
-        />
+            onEdit={() => selectTicket(record)}
+            onDelete={() => console.log("delete")}
+          />
         </div>
       ),
     },
@@ -225,7 +279,7 @@ const StudentPage = () => {
                   >
                     <Button icon={<UploadOutlined />}>Click to Upload</Button>
                   </Upload>
-                  <CCard style={{ marginTop: 30 ,padding :10}}>
+                  <CCard style={{ marginTop: 30, padding: 10 }}>
                     <CRow>
                       <CCol xs="5"></CCol>
                       <CCol xs="12">
@@ -301,7 +355,7 @@ const StudentPage = () => {
                     <CInput
                       id="name"
                       placeholder="Code Card"
-                      value={ticketSelected ? ticketSelected.maThe : ""}
+                      value={ticketSelected ? ticketSelected.mathe : ""}
                       onChange={e => handleOnChangeInputTikcet(e, "code")}
                       disabled
                     />
@@ -314,7 +368,7 @@ const StudentPage = () => {
                       id="ccnumber"
                       placeholder="Licene plate"
                       className="impress"
-                      value={ticketSelected ? ticketSelected.bienSo : ""}
+                      value={ticketSelected ? ticketSelected.bienso : ""}
                       onChange={e => handleOnChangeInputTikcet(e, "licence")}
                     />
                   </CFormGroup>
@@ -328,7 +382,7 @@ const StudentPage = () => {
                       id="name"
                       placeholder="Code Color"
                       className="impress"
-                      value={ticketSelected ? ticketSelected.mauXe : ""}
+                      value={ticketSelected ? ticketSelected.mauxe : ""}
                       onChange={e => handleOnChangeInputTikcet(e, "color")}
                     />
                   </CFormGroup>
@@ -340,7 +394,7 @@ const StudentPage = () => {
                       id="ccnumber"
                       placeholder="Type"
                       className="impress"
-                      value={ticketSelected ? ticketSelected.loaiXe : ""}
+                      value={ticketSelected ? ticketSelected.loaixe : ""}
                       onChange={e => handleOnChangeInputTikcet(e, "type")}
                     />
                   </CFormGroup>
@@ -354,16 +408,16 @@ const StudentPage = () => {
                       type="date"
                       id="name"
                       value={
-                        ticketSelected ? ticketSelected.thoiGianBatDau : ""
+                        ticketSelected
+                          ? helpers.getDateInputDate(ticketSelected.start)
+                          : ""
                       }
                       onChange={e => handleOnChangeInputTikcet(e, "dateStart")}
                     />
                     <CInput
                       type="time"
                       id="name"
-                      value={
-                        ticketSelected ? ticketSelected.thoiGianBatDau : ""
-                      }
+                      value={ticketSelected ? helpers.getTimeInputTime(ticketSelected.start) : ""}
                       onChange={e => handleOnChangeInputTikcet(e, "timeStart")}
                     />
                   </CFormGroup>
@@ -377,14 +431,18 @@ const StudentPage = () => {
                       type="date"
                       id="name"
                       value={
-                        ticketSelected ? ticketSelected.thoiGianKetThuc : ""
+                        ticketSelected
+                          ? helpers.getDateInputDate(ticketSelected.end)
+                          : ""
                       }
                     />
                     <CInput
                       type="time"
                       id="name"
                       value={
-                        ticketSelected ? ticketSelected.thoiGianKetThuc : ""
+                        ticketSelected
+                          ? helpers.getTimeInputTime(ticketSelected.end)
+                          : ""
                       }
                     />
                   </CFormGroup>
@@ -394,24 +452,24 @@ const StudentPage = () => {
                 <CCol xs="6">
                   <CFormGroup>
                     <CLabel htmlFor="name">Nhân Viên Lập </CLabel>
-                    <CInput
+                    <CSelect
                       id="name"
-                      placeholder="Name"
-                      value={ticketSelected ? ticketSelected.nhanVienLap : ""}
+                      name="name"
+                      value={ticketSelected ? ticketSelected.nhanvienlap : ""}
                       onChange={e => handleOnChangeInputTikcet(e, "name")}
-                    />
+                    >
+                      {staffOptions}
+                    </CSelect>
                   </CFormGroup>
                 </CCol>
                 <CCol xs="6">
                   <CFormGroup>
                     <CLabel htmlFor="name">Loại Gửi </CLabel>
                     <CSelect
-                      value={ticketSelected ? ticketSelected.loaiGui : ""}
+                      value={ticketSelected ? ticketSelected.loaigui : ""}
                       onChange={e => handleOnChangeInputTikcet(e, "price")}
                     >
-                      <option>15 Ngày</option>
-                      <option>20 Ngày</option>
-                      <option>25 Ngày</option>
+                      {typeSend}
                     </CSelect>
                   </CFormGroup>
                 </CCol>
@@ -422,11 +480,15 @@ const StudentPage = () => {
                 <Button type="default" onClick={() => setTicketSelected(null)}>
                   Hủy
                 </Button>
-                <Button type="primary">
-                  {" "}
-                  <CIcon name="cil-cursor" />
-                  Thêm Thẻ
-                </Button>
+                <Popconfirm
+                  onConfirm={handleSubmit}
+                >
+                  <Button type="primary">
+                    {" "}
+                    <CIcon name="cil-cursor" />
+                    Thêm Thẻ
+                  </Button>
+                </Popconfirm>
               </div>
             </CCardFooter>
           </CCard>
@@ -435,11 +497,11 @@ const StudentPage = () => {
       <Row className="tabelPanel">
         <Card className="table table-full">
           <Row className="add-class">
-            <h4>Danh sách thẻ</h4>
+            <h4>Danh sách vé thẻ</h4>
           </Row>
           <Table
             style={{ border: 1 }}
-            dataSource={tickets}
+            dataSource={ticketConverted}
             columns={columnTickets}
             pagination={{ pageSize: 4 }}
             bordered

@@ -3,7 +3,7 @@ import {EditOutlined,DeleteOutlined,WalletOutlined} from '@ant-design/icons';
 import { rowAction } from "../../../../common/variable";
 import { useState } from "react";
 import { useDispatch } from "react-redux";
-import StudentServices from "../../../../redux/services/StudentServices";
+import StudentServices from "../../../../redux/services/CardServices";
 import { DrawerStudent } from "./DrawerStudent";
 
 export default function ActionStudent(props){

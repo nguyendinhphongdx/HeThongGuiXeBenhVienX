@@ -12,7 +12,7 @@ import ChartLineSimple from "../../charts/ChartLineSimple";
 const WidgetsCountData = ({ data }) => {
   const listdevided = helpers.devideCard(data);
   const randomType = (data, index) => {
-    const professorName =`Số lượng xe - ${data.value}`;
+    const currentNumber =`Số lượng xe hiện tại - ${data.soLuongHienTai}`;
     var type = 0;
     if (index == 0 || (index % 4 == 0 && index > 4)) {
       type = 0;
@@ -33,8 +33,8 @@ const WidgetsCountData = ({ data }) => {
             <CWidgetDropdown
               className="box"
               color="gradient-primary"
-              header={data.name}
-              text={`${professorName}`}
+              header={`${data.tenKhuVuc}`}
+              text={`${currentNumber}`}
               children={<h3>abc</h3>}
               footerSlot={
                 <ChartLineSimple
@@ -69,8 +69,8 @@ const WidgetsCountData = ({ data }) => {
           <Col key={index} className={'col-cus'}>
             <CWidgetDropdown
               color="gradient-info"
-              header={data.name}
-              text={professorName}
+              header={`${data.tenKhuVuc}`}
+              text={currentNumber}
               footerSlot={
                 <ChartLineSimple
                   pointed
@@ -105,8 +105,8 @@ const WidgetsCountData = ({ data }) => {
           <CCol key={index} className={'col-cus'}>
             <CWidgetDropdown
               color="gradient-warning"
-              header={data.name}
-              text={professorName}
+              header={`${data.tenKhuVuc}`}
+              text={currentNumber}
               footerSlot={
                 <ChartLineSimple
                   className="mt-3"
@@ -141,9 +141,8 @@ const WidgetsCountData = ({ data }) => {
           <CCol key={index} className={'col-cus'}>
             <CWidgetDropdown
               color="gradient-danger"
-              header={data.name}
-              text={professorName}
-            
+              header={`${data.tenKhuVuc}`}
+              text={currentNumber}
               footerSlot={
                 <ChartBarSimple
                   className="mt-3 mx-3"

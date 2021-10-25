@@ -2,6 +2,8 @@ import { combineReducers } from "redux";
 import card from "./cardReducer";
 import changeState from "./layoutReducer";
 import location from "./locationReducer";
+import price from "./priceReducer";
+import role from "./roleReducer";
 import settings from "./settingsReducer";
 import staff from "./staffReducer";
 import statistic from "./statisticReducer";
@@ -16,5 +18,7 @@ const myReducers = combineReducers({
   Staff:staff,
   Ticket:ticket,
   Card:card,
+  Price:price,
+  Role:role
 });
 export default myReducers;

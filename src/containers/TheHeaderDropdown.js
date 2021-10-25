@@ -15,7 +15,7 @@ import {useHistory} from "react-router-dom";
 const TheHeaderDropdown = () => {
   const { logout } = useContext(AuthContext);
   const history = useHistory();
-  const currentName = JSON.parse(localStorage.getItem('currentUser')).user_name || 'Account';
+  const currentName = JSON.parse(localStorage.getItem('currentUser')).tennv || 'Account';
   const handleLogout = ()=>{
     logout(history)
   }

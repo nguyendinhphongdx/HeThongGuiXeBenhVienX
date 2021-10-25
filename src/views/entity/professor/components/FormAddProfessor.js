@@ -3,7 +3,6 @@ import { Button, Col, Form, Input, Row, Switch, Upload } from "antd";
 import TextArea from "antd/lib/input/TextArea";
 import { useState } from 'react';
 import { useDispatch } from 'react-redux';
-import ProfessorServices from '../../../../redux/services/ProfessorServices';
 import { styleColumnModal, styleRowModal, styleRowModalAction, styleRowUploadAvatar } from "../../../../common/variable";
 export function FormAddProfessor(props){
     const {callback} = props;
@@ -19,7 +18,7 @@ export function FormAddProfessor(props){
       };
     function handleChangeOnAdd(data){
       data = {...data,file:file}
-      ProfessorServices.AddProfessor(dispatch,data)
+    
       .then(result => {
         callback();
       })

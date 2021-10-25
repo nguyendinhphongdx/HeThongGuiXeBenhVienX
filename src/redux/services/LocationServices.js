@@ -1,15 +1,15 @@
 import { message } from "antd";
 import sendRequest from "../../axios/requestAPI";
-import helpers from "../../helpers/helpers";
-import professorActions from "../actions/locationActions";
+import converter from "../../helpers/converter";
+import locationActions from "../actions/locationActions";
 const key='updatable'
-class ProfessorServices{
-    async GetDataProfessor(dispatch){
+class LocationServices{
+    async GetDataLocation(dispatch){
         message.loading({ content: 'Đang xử lý...', key });
-        const request = await sendRequest('/professor/professores','get')
+        const request = await sendRequest('/location/queryAll','get')
         .then(response =>{
             if(response.status == 200){
-                const action = professorActions.Get_All_Professor(response.data || [])
+                const action = locationActions.Get_All_Location(converter.convertLocation(response.data) || [])
                 dispatch(action);
                 return 'success'
             }else{
@@ -35,7 +35,7 @@ class ProfessorServices{
         const request = await sendRequest('/professor/add_professo','post',form)
         .then(response =>{
             if(response.status == 200){
-                const action = professorActions.Add_Professor(response.data[0])
+                const action = locationActions.Add_Location(response.data[0])
                 dispatch(action);
                 return 'success'
             }else{
@@ -48,12 +48,12 @@ class ProfessorServices{
         })
         return request
     }
-    async SynchonousDataProfessor(dispatch,data){
+    async AddLocation(dispatch,data){
         message.loading({ content: 'Đang xử lý... ', key });
-        const request = await sendRequest('/professor/syncClass','post')
+        const request = await sendRequest('/location/addLocation','post')
         .then(response =>{
             if(response.status == 200){
-                const action = professorActions.Get_All_Professor(response.data)
+                const action = locationActions.Add_Location(response.data)
                 dispatch(action);
                 return 'success'
             }else{
@@ -67,4 +67,4 @@ class ProfessorServices{
         return request
     }
 }
-export default new ProfessorServices();
+export default new LocationServices();

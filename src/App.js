@@ -4,7 +4,6 @@ import ReactNotification from 'react-notifications-component';
 import 'react-notifications-component/dist/theme.css';
 import { HashRouter, Redirect, Route, Switch } from 'react-router-dom';
 import { AuthContext } from './contexts/auth';
-import SocketInstant from './socket.io/index';
 import './scss/selfStyle.scss';
 import './scss/style.scss';
 import IndicatorLoading from './views/action/indicator';
@@ -25,10 +24,7 @@ const Page500 = React.lazy(() => import('./views/pages/page500/Page500'));
 const App = () => {
   const { token } = useContext(AuthContext);
   useEffect(()=>{
-    const currentUser = JSON.parse(localStorage.getItem('currentUser')|| `{}`);
-    // if(currentUser){
-    //   SocketInstant.initiateSocket(null,currentUser._id || '');
-    // }
+    
   },[])
   return (
       <HashRouter>

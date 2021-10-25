@@ -15,7 +15,7 @@ import { Button, message, Row } from "antd";
 import React, { useEffect } from "react";
 import { useDispatch } from "react-redux";
 import ImageComponent from "../../../common/components/image";
-import ProfessorServices from "../../../redux/services/ProfessorServices";
+import LocationServices from "../../../redux/services/LocationServices";
 import ActionFrofessor, {
   AcitonDetailSubject,
 } from "./components/ActionProfessor";
