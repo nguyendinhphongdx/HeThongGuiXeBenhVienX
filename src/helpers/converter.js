@@ -1,27 +1,7 @@
 import { SERVER_NODE } from '../axios/configAPI';
+import helpers from '../helpers/helpers';
 import Helper from '../helpers/helpers';
 class ServiceConverter{
-    convertServices = (services) => {
-        var ret = [];
-        services.forEach((item) => {
-            const methods = Object.keys(item.config);
-            const result = methods.map((method) => {
-    
-                return {
-                    key: item.endpoint + method,
-                    Endpoint: item.endpoint,
-                    Method: method,
-                    Redirect_Method: item.config[`${method}`].method,
-                    URL: item.config[`${method}`].url,
-                    config: item.config[`${method}`],
-                    origin: item
-                }
-            })
-            ret.push(...result);
-        })
-        return ret
-    }
- 
     EncodeAuthorization = (object) => {
         if (object.type === 'Bear') {
             return `Bear ${object.token}`
@@ -92,8 +72,10 @@ class ServiceConverter{
             return {
                 index: index,
                 ...item,
-                start:item.thoigianbatdau,
-                end:item.thoigianketthuc,
+                dstart:item.thoigianbatdau,
+                tstart:helpers.getTimeInputTime(item.thoigianbatdau),
+                dend:item.thoigianketthuc,
+                tend:helpers.getTimeInputTime(item.thoigianketthuc),
                 thoigianbatdau:new Date(item.thoigianbatdau).toLocaleDateString() +' - '+new Date(item.thoigianbatdau).toLocaleTimeString(),
                 thoigianketthuc:new Date(item.thoigianketthuc).toLocaleDateString() +' - '+new Date(item.thoigianketthuc).toLocaleTimeString(),
             }
@@ -108,6 +90,17 @@ class ServiceConverter{
                 loaiGui:`${item.loaiGui} Ngày`
             }
         })
+    }
+    convertChartAnalysType = (arr) =>{
+        const data = arr.map((item,index)=>{
+            // loaixe: 'winner', soluong: 17, index: 3
+            return {
+                ...item,
+                key:item.loaixe,
+                value:item.soluong
+            }
+        })
+        return helpers.addFieldColorRandom(data)
     }
 }
 export default new ServiceConverter();

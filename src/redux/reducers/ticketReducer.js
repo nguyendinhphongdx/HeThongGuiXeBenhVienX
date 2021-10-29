@@ -2,7 +2,8 @@
 import { message } from 'antd';
 import {TicketConstant} from '../config/constant';
 const initialState = {
-    tickets:[]
+    tickets:[],
+    analysisType:[]
 };
 const key = 'updatable';
 const ticket = (state = initialState, action) => {
@@ -13,6 +14,13 @@ const ticket = (state = initialState, action) => {
             return {
                 ...state,
                 tickets:tickets
+            }
+        }
+        case TicketConstant.GET_DATA_TYPE: {
+            const analys = action.payload;
+            return {
+                ...state,
+                analysisType:analys
             }
         }
         case TicketConstant.ADD_TICKET: {

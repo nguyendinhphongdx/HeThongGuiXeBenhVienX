@@ -13,5 +13,11 @@ class TicketActions{
           payload: ticket
       }
    }
+   Get_Types=(analys) => {
+    return {
+       type: TicketConstant.GET_DATA_TYPE,
+       payload: analys
+   }
+}
 }
 export default new TicketActions();

@@ -14,6 +14,7 @@ import React, { lazy, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import LocationServices from "../../redux/services/LocationServices.js";
 import StaffServices from "../../redux/services/StaffServices.js";
+import TicketServices from "../../redux/services/TicketServices.js";
 import MainChartExample from "../charts/MainChartExample.js";
 import ChartDataAttack from "./components/ChartDataAttack.js";
 import DoughNutChartData from "./components/DoughNutChartData.js";
@@ -26,12 +27,14 @@ const WidgetsCountData = lazy(() => import("./components/WidgetsCountData"));
 const Dashboard = () => {
   const store = useSelector(state => state);
   const locations = useSelector(state => state.Location.locations);
+  const analysisType = useSelector(state => state.Ticket.analysisType);
   console.log("STORE APP", store);
   const dispatch = useDispatch();
   useEffect(() => {
     Promise.all([
       StaffServices.GetDataStaff(dispatch),
       LocationServices.GetDataLocation(dispatch),
+      TicketServices.GetDataType(dispatch),
     ]);
   }, []);
   return (
@@ -39,11 +42,11 @@ const Dashboard = () => {
       <WidgetsCountData data={locations} />
       <CRow>
         <CCol xs="8" xl="6">
-          <SlideCarosel data={[]} />
+          <ChartDataAttack />
         </CCol>
         <CCol xs="8" xl="6">
           <div className="wrapper-chart">
-            <ChartDataAttack />
+            <DoughNutChartData title={"Analyzer Type"} data={analysisType} />
           </div>
         </CCol>
       </CRow>
@@ -134,10 +137,11 @@ const Dashboard = () => {
 
       <CRow>
         <CCol xs="12" xl="6">
-          <DoughNutChartData title={"Operations System"} data={datadough} />
+          <SlideCarosel data={[]} />
         </CCol>
         <CCol xs="12" xl="6">
-          <DoughNutChartData title={"Vulnerability"} data={datadough} />
+          {/* <DoughNutChartData title={"Vulnerability"} data={datadough} /> */}
+          <SlideCarosel data={[]} />
         </CCol>
       </CRow>
       <CRow>

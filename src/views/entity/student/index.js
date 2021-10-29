@@ -6,6 +6,7 @@ import {
   CCardFooter,
   CCardHeader,
   CCol,
+  CForm,
   CFormGroup,
   CInput,
   CLabel,
@@ -29,12 +30,11 @@ import helpers from "../../../helpers/helpers";
 import TicketServices from "../../../redux/services/TicketServices";
 import { useDispatch, useSelector } from "react-redux";
 import PriceServices from "../../../redux/services/PriceServices";
-import UserServices from "../../../redux/services/UserServices";
 import StaffServices from "../../../redux/services/StaffServices";
 const StudentPage = () => {
   const dispatch = useDispatch();
   const [ticketSelected, setTicketSelected] = useState(null);
-  const [ticketSubmit,setTicketSubmit] = useState(null);
+  const [isUpdate,setUpdate] = useState(false);
   const [base64Image, setBase64Image] = useState(null);
   const tickets = useSelector(state => state.Ticket.tickets);
   const prices = useSelector(state => state.Price.prices);
@@ -54,7 +54,7 @@ const StudentPage = () => {
       left: 0,
       behavior: "smooth",
     });
-    console.log(ticket);
+    setUpdate(true);
     setTicketSelected(ticket);
   };
   const toggleLaser = () => {
@@ -68,7 +68,7 @@ const StudentPage = () => {
   const scanImage = name => {
     toggleLaser();
     const object = helpers.getInForFromNameFile(name);
-    console.log(object);
+    setTicketSelected(null)
     setTimeout(() => {
       setTicketSelected({
         bienso: object.licence,
@@ -92,30 +92,23 @@ const StudentPage = () => {
     );
   });
   const handleOnChangeInputTikcet = (e, type) => {
-    console.log(e.target.value);
-      switch(type){
-        case 'code':setTicketSelected({
-          ...ticketSelected,
-          mathe:e.target.value
-        }); break;
-        case 'licence':setTicketSelected({
-          ...ticketSelected,
-          bienso:e.target.value
-        }); break;
-        case 'type':setTicketSelected({
-          ...ticketSelected,
-          loaixe:e.target.value
-        }); break;
-        case 'color':setTicketSelected({
-          ...ticketSelected,
-          mauxe:e.target.value
-        }); break;
-        case 'timeStart':setTicketSelected({
-          ...ticketSelected,
-          start:e.target.value
-        }); break;
-        
+    let element = {};
+    const value = e.target.value;
+    switch(type){
+        case 'code':element.mathe=value; break;
+        case 'licence':element.bienso=value; break;
+        case 'type':element.loaixe=value; break;
+        case 'color':element.mauxe=value; break;
+        case 'timeStart':element.tstart=value; break;
+        case 'dateStart':element.dstart=value; break;
+        case 'timeEnd':element.tend=value; break;
+        case 'dateEnd':element.dend=value; break;
+        case 'price':element.loaigui=value; break;
       }
+      setTicketSelected({
+        ...ticketSelected,
+        ...element
+      })
   };
   const onChangeFile = info => {
     if (info.fileList && info.fileList[0]) {
@@ -129,7 +122,7 @@ const StudentPage = () => {
     }
   };
   const handleSubmit = () =>{
-    console.log({...ticketSelected,...ticketSubmit});
+    console.log({...ticketSelected});
   }
   useEffect(() => {
     TicketServices.GetDataTicket(dispatch);
@@ -289,10 +282,7 @@ const StudentPage = () => {
                             id="ccnumber"
                             placeholder="Licene plate"
                             className="impress"
-                            value={ticketSelected ? ticketSelected.bienSo : ""}
-                            onChange={e =>
-                              handleOnChangeInputTikcet(e, "licence")
-                            }
+                            value={ticketSelected ? ticketSelected.bienso : ""}
                           />
                         </CFormGroup>
                       </CCol>
@@ -305,7 +295,7 @@ const StudentPage = () => {
                             id="name"
                             placeholder="Code Color"
                             className="impress"
-                            value={ticketSelected ? ticketSelected.mauXe : ""}
+                            value={ticketSelected ? ticketSelected.mauxe : ""}
                             onChange={e =>
                               handleOnChangeInputTikcet(e, "color")
                             }
@@ -319,7 +309,7 @@ const StudentPage = () => {
                             id="ccnumber"
                             placeholder="Type"
                             className="impress"
-                            value={ticketSelected ? ticketSelected.loaiXe : ""}
+                            value={ticketSelected ? ticketSelected.loaixe : ""}
                             onChange={e => handleOnChangeInputTikcet(e, "type")}
                           />
                         </CFormGroup>
@@ -343,6 +333,7 @@ const StudentPage = () => {
           </CRow>
         </CCol>
         <CCol xs="5">
+          <CForm>
           <CCard className="table table-full" id="top-info">
             <CCardHeader className="add-class">
               <h4>Thông tin vé thẻ</h4>
@@ -358,6 +349,7 @@ const StudentPage = () => {
                       value={ticketSelected ? ticketSelected.mathe : ""}
                       onChange={e => handleOnChangeInputTikcet(e, "code")}
                       disabled
+                      required
                     />
                   </CFormGroup>
                 </CCol>
@@ -370,6 +362,7 @@ const StudentPage = () => {
                       className="impress"
                       value={ticketSelected ? ticketSelected.bienso : ""}
                       onChange={e => handleOnChangeInputTikcet(e, "licence")}
+                      required
                     />
                   </CFormGroup>
                 </CCol>
@@ -409,7 +402,7 @@ const StudentPage = () => {
                       id="name"
                       value={
                         ticketSelected
-                          ? helpers.getDateInputDate(ticketSelected.start)
+                          ? helpers.getDateInputDate(ticketSelected.dstart)
                           : ""
                       }
                       onChange={e => handleOnChangeInputTikcet(e, "dateStart")}
@@ -417,7 +410,7 @@ const StudentPage = () => {
                     <CInput
                       type="time"
                       id="name"
-                      value={ticketSelected ? helpers.getTimeInputTime(ticketSelected.start) : ""}
+                      value={ticketSelected ? ticketSelected.tstart : ""}
                       onChange={e => handleOnChangeInputTikcet(e, "timeStart")}
                     />
                   </CFormGroup>
@@ -432,18 +425,20 @@ const StudentPage = () => {
                       id="name"
                       value={
                         ticketSelected
-                          ? helpers.getDateInputDate(ticketSelected.end)
+                          ? helpers.getDateInputDate(ticketSelected.dend)
                           : ""
                       }
+                      onChange={e => handleOnChangeInputTikcet(e, "dateEnd")}
                     />
                     <CInput
                       type="time"
                       id="name"
                       value={
                         ticketSelected
-                          ? helpers.getTimeInputTime(ticketSelected.end)
+                          ?ticketSelected.tend
                           : ""
                       }
+                      onChange={e => handleOnChangeInputTikcet(e, "timeEnd")}
                     />
                   </CFormGroup>
                 </CCol>
@@ -477,13 +472,17 @@ const StudentPage = () => {
             </CCardBody>
             <CCardFooter>
               <div className="footer-button">
-                <Button type="default" onClick={() => setTicketSelected(null)}>
+                <Button type="default" onClick={() => {
+                  setTicketSelected(null);
+                  setUpdate(false);
+                }}>
                   Hủy
                 </Button>
                 <Popconfirm
                   onConfirm={handleSubmit}
+                  title={isUpdate?'Xác nhận cập nhật!':'Xác nhận thêm mới!'}
                 >
-                  <Button type="primary">
+                  <Button type="submit">
                     {" "}
                     <CIcon name="cil-cursor" />
                     Thêm Thẻ
@@ -492,6 +491,7 @@ const StudentPage = () => {
               </div>
             </CCardFooter>
           </CCard>
+          </CForm>
         </CCol>
       </Row>
       <Row className="tabelPanel">

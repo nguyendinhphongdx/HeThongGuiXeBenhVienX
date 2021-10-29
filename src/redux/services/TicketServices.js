@@ -1,6 +1,7 @@
 import { message } from "antd";
 import sendRequest from "../../axios/requestAPI";
 import converter from "../../helpers/converter";
+import helpers from "../../helpers/helpers";
 import TicketAction  from "../actions/ticketActions";
 const key = "updatable";
 class TicketServices {
@@ -44,5 +45,20 @@ class TicketServices {
       });
     return request;
   }
+  async GetDataType(dispatch) {
+    const request = await sendRequest("/ticket/analysis", "get")
+      .then(response => {
+        const convert = helpers.countPercentType(response.data);
+        const action = TicketAction.Get_Types(converter.convertChartAnalysType(convert));
+        dispatch(action);
+        return response.data;
+      })
+      .catch(error => {
+        console.log(error);
+        message.warning({ content: "Fetch Lỗi.", key });
+      });
+    return request;
+  }
 }
+
 export default new TicketServices();

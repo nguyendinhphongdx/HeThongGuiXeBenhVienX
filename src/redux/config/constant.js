@@ -31,6 +31,7 @@ export const CardConstant = {
 export const TicketConstant = {
   GET_DATA_TICKET:"GET_DATA_TICKET",
   ADD_TICKET:"ADD_TICKET",
+  GET_DATA_TYPE:"GET_DATA_TYPE"
 }
 export const StaffConstant = {
   GET_DATA_STAFF:"GET_DATA_STAFF",

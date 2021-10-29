@@ -1,4 +1,3 @@
-import jwt from "jsonwebtoken";
 import { colorRandom } from "../anothers/constants";
 import { LAYOUTCONSTANTS } from "../redux/config/constant";
 class HelperClass {
@@ -80,17 +79,6 @@ class HelperClass {
     let dateNow = date.getFullYear() + "-" + month + "-" + day;
     return dateNow;
   }
-  cutChartData(data) {
-    const result = data.filter(item => {
-      if (!isNaN(item.value) && item.value != 0) {
-        return {
-          ...item,
-          value: Number(item.value),
-        };
-      }
-    });
-    return result;
-  }
   devideCard(array) {
     const nGroup = array.length / 4;
     var newArray = [];
@@ -101,52 +89,6 @@ class HelperClass {
     }
     return newArray;
   }
-  filterStudentInClass(members, students) {
-    const studentInfo = members.map(member => {
-      return students.find(
-        student => JSON.stringify(student._id) === JSON.stringify(member)
-      );
-    });
-    return studentInfo;
-  }
-  filterStudentByKeys(keys, students) {
-    const result = keys.map(item => {
-      const student = students.find(
-        _item => JSON.stringify(_item.key) === JSON.stringify(item)
-      );
-      return student ? student._id : null;
-    });
-    return result;
-  }
-  devideStudentInClass(members, students) {
-    const inClass = members.map(member => {
-      return students.find(
-        student => JSON.stringify(student._id) === JSON.stringify(member)
-      );
-    });
-    const NotInClass = students.filter(
-      student => !members.includes(student._id)
-    );
-
-    return {
-      inClass,
-      NotInClass,
-    };
-  }
-  filterStudentInClass(members, students) {
-    const studentInfo = members.map(member => {
-      return students.find(
-        student => JSON.stringify(student._id) === JSON.stringify(member)
-      );
-    });
-    return studentInfo;
-  }
-  filterClassInStudent(classes,listClass){
-    const result= classes.map(item => {
-        return listClass.find(_item =>JSON.stringify(_item._id)===JSON.stringify(item))
-    })
-    return result;
-  }
   getBase64(file) {
     return new Promise((resolve, reject) => {
       const reader = new FileReader();
@@ -155,15 +97,15 @@ class HelperClass {
       reader.onerror = error => reject(error);
     });
   }
-  getInForFromNameFile(namefile){
+  getInForFromNameFile(namefile) {
     const arr = namefile.split(".");
     return {
-      licence:arr[0],
-      color:arr[1],
-      type:arr[2],
-    }
+      licence: arr[0],
+      color: arr[1],
+      type: arr[2],
+    };
   }
-  getDateInputDate(time){
+  getDateInputDate(time) {
     const date = new Date(time);
     let month =
         date.getMonth() < 9 ? "0" + (date.getMonth() + 1) : date.getMonth() + 1,
@@ -171,11 +113,25 @@ class HelperClass {
     let dateNow = date.getFullYear() + "-" + month + "-" + day;
     return dateNow;
   }
-  getTimeInputTime(time){
+  getTimeInputTime(time) {
     const date = new Date(time);
-    const timeNow = date.getHours() < 10?`0${date.getHours()}`:date.getHours();
-    const minuteNow = date.getMinutes() < 10?`0${date.getMinutes()}`:date.getMinutes();
-    return timeNow +":"+minuteNow;
+    const timeNow =
+      date.getHours() < 10 ? `0${date.getHours()}` : date.getHours();
+    const minuteNow =
+      date.getMinutes() < 10 ? `0${date.getMinutes()}` : date.getMinutes();
+    return timeNow + ":" + minuteNow;
+  }
+  countPercentType(analysis) {
+    let sum = analysis.reduce(function (accumulator, currentValue) {
+      return accumulator + currentValue.soluong;
+    }, 0);
+    return analysis.map((item, index) => {
+      return {
+        ...item,
+        index,
+        soluong: Math.round((item.soluong / sum) * 100),
+      };
+    });
   }
 }
 export default new HelperClass();
