@@ -57,22 +57,7 @@ export const ValidateFormAddService = (data) => {
     }
   
 }
-export const ValidateFormUpdateConfig = (data, {access_data,option}) => {
-    const config = data.origin.config;
-    const body = {
-        ...data.origin,
-    };
-    body.config = {};
-    const boo = !(option.key === undefined ||  option.key === '' || option.endpoint === undefined || option.method === undefined)
-    console.log(boo);
-    const newOption = boo?option:{}
-    body.config[`${data.Method}`] = {
-        ...config[`${data.Method}`],
-        access_data: access_data,
-        option:newOption
-    }
-    return body;
-}
+
 export const ValidateFormLogin = (data) => {
     if (!data.taikhoan) {
         return {
@@ -115,23 +100,38 @@ export const ValidateFormRegistry = (data) => {
     }
     return true;
 }
-export function validateClass(data){
-    var result = {...data}
-    if(!data.name){
-        delete result.name
+export const ValidateFormAddTicket = (data) => {
+    if(!data.mathe){
+        return "Chọn thẻ"
     }
-    if(!data._idSubject){
-        delete result._idSubject
+    if(!data.bienso){
+        return "Nhập vào biển số!"
     }
-    if(!data._idProfessor){
-        delete result._idProfessor
+    if(!data.dstart || !data.tstart){
+        return "Nhập vào ngày bắt đầu!"
     }
-    if(!data.schedule1){
-        delete result.schedule1
+    if(!data.loaigui){
+        return "Chọn loại gửi!"
     }
-    if(!data.schedule2){
-        delete result.schedule2
+    if(!data.loaixe){
+        return "Nhập loại xe!"
     }
-    return result;
-
+    if(!data.mauxe){
+        return "Nhập màu xe!"
+    }
+    if(!data.nhanvienlap){
+        return "Nhân viên lập chưa được lựa chọn!"
+    }
+    const stringTime = data.tstart.split(":");
+    const dateStart = new Date(data.dstart);
+    dateStart.setHours(stringTime[0]);
+    dateStart.setMinutes(stringTime[1]);
+    delete data.thoigianketthuc
+    return {
+        ...data,
+        mathe:+data.mathe,
+        manv:+data.nhanvienlap,
+        magia:+data.loaigui,
+        thoigianbatdau:dateStart.toISOString()
+    }
 }

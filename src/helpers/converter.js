@@ -69,6 +69,7 @@ class ServiceConverter{
     }
     convertTicket = (arr) =>{
         return arr.map((item,index)=>{
+            const kt = item.thoigianketthuc === item.thoigianbatdau?'Chưa trả lại':new Date(item.thoigianketthuc).toLocaleDateString() +' - '+new Date(item.thoigianketthuc).toLocaleTimeString()
             return {
                 index: index,
                 ...item,
@@ -77,7 +78,7 @@ class ServiceConverter{
                 dend:item.thoigianketthuc,
                 tend:helpers.getTimeInputTime(item.thoigianketthuc),
                 thoigianbatdau:new Date(item.thoigianbatdau).toLocaleDateString() +' - '+new Date(item.thoigianbatdau).toLocaleTimeString(),
-                thoigianketthuc:new Date(item.thoigianketthuc).toLocaleDateString() +' - '+new Date(item.thoigianketthuc).toLocaleTimeString(),
+                thoigianketthuc:kt,
             }
         })
     }

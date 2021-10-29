@@ -6,26 +6,20 @@ import TicketAction  from "../actions/ticketActions";
 const key = "updatable";
 class TicketServices {
     async AddTicketServices(dispatch, body) {
-    const form = new FormData();
-    form.append("file", body.file);
-    form.append("title", body.title);
-    form.append("description", body.description);
-    form.append("_idSubject", body._idSubject);
-    form.append("_idAuth", body._idAuth);
-    form.append("status", body.status ? "actived" : "blocked");
+   
     message.loading({ content: "Đang xử lý...", key });
-    const request = await sendRequest("/document/upload", "post", form)
+    const request = await sendRequest("/ticket/addTicket", "post", body)
       .then(response => {
-        const action = TicketAction.Add_Ticket(response.data[0]);
+        const action = TicketAction.Get_All_Ticket(converter.convertTicket(response.data));
         dispatch(action);
         return response.data;
       })
       .catch(error => {
-        console.log(error);
         if (error.response) {
-          message.warning({ content: error.response.data.message, key });
-        } else {
+          console.log(error);
           message.warning({ content: "Thêm Lỗi.", key });
+        } else {
+          message.warning( "Thêm Lỗi.");
         }
       });
     return request;

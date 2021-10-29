@@ -19,11 +19,12 @@ import {
   Image,
   message,
   Popconfirm,
+  Form,
   Row,
   Table,
   Upload,
 } from "antd";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import ActionClass from "../_class/components/ActionClass";
 import "./index.scss";
 import helpers from "../../../helpers/helpers";
@@ -31,17 +32,30 @@ import TicketServices from "../../../redux/services/TicketServices";
 import { useDispatch, useSelector } from "react-redux";
 import PriceServices from "../../../redux/services/PriceServices";
 import StaffServices from "../../../redux/services/StaffServices";
+import { ValidateFormAddTicket } from "../../../helpers/validateForm";
+import { useForm } from "react-hook-form";
+import { string } from "prop-types";
+import CardServices from "../../../redux/services/CardServices";
+import LocationServices from "../../../redux/services/LocationServices";
 const StudentPage = () => {
   const dispatch = useDispatch();
   const [ticketSelected, setTicketSelected] = useState(null);
-  const [isUpdate,setUpdate] = useState(false);
+  const [isUpdate, setUpdate] = useState(false);
   const [base64Image, setBase64Image] = useState(null);
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm();
+  const [form] = Form.useForm();
   const tickets = useSelector(state => state.Ticket.tickets);
   const prices = useSelector(state => state.Price.prices);
   const staffs = useSelector(state => state.Staff.staffs);
+  const cards = useSelector(state => state.Card.cards);
+  const locations = useSelector(state => state.Location.locations);
   const ticketConverted = tickets.map(item => {
-    const findnv = staffs.find(item => item.manv === item.manv);
-    const findprice = prices.find(item => item.magia === item.magia);
+    const findnv = staffs.find(nv => nv.manv === item.manv);
+    const findprice = prices.find(pr => pr.magia === item.magia);
     return {
       ...item,
       nhanvienlap: findnv ? findnv.tennv : "unknown",
@@ -68,12 +82,14 @@ const StudentPage = () => {
   const scanImage = name => {
     toggleLaser();
     const object = helpers.getInForFromNameFile(name);
-    setTicketSelected(null)
+    setTicketSelected(null);
     setTimeout(() => {
       setTicketSelected({
         bienso: object.licence,
         mauxe: object.color,
         loaixe: object.type,
+        dstart: helpers.getDateInputDate(new Date().getTime()),
+        tstart: helpers.getTimeInputTime(new Date().getTime()),
       });
     }, 2000);
   };
@@ -91,45 +107,90 @@ const StudentPage = () => {
       </option>
     );
   });
+  const cardOptions = cards
+    .map((item, index) => {
+      const location = locations.find(kv => kv.maKhuVuc == item.makhuvuc);
+      return (
+        <option key={index} value={item.mathe}>
+          {`${item.mathe} - ${location?location.tenKhuVuc:''}`}
+        </option>
+      );
+    });
   const handleOnChangeInputTikcet = (e, type) => {
     let element = {};
     const value = e.target.value;
-    switch(type){
-        case 'code':element.mathe=value; break;
-        case 'licence':element.bienso=value; break;
-        case 'type':element.loaixe=value; break;
-        case 'color':element.mauxe=value; break;
-        case 'timeStart':element.tstart=value; break;
-        case 'dateStart':element.dstart=value; break;
-        case 'timeEnd':element.tend=value; break;
-        case 'dateEnd':element.dend=value; break;
-        case 'price':element.loaigui=value; break;
-      }
-      setTicketSelected({
-        ...ticketSelected,
-        ...element
-      })
+    switch (type) {
+      case "code":
+        element.mathe = value;
+        break;
+      case "licence":
+        element.bienso = value;
+        break;
+      case "type":
+        element.loaixe = value;
+        break;
+      case "color":
+        element.mauxe = value;
+        break;
+      case "timeStart":
+        element.tstart = value;
+        break;
+      case "dateStart":
+        element.dstart = value;
+        break;
+      case "timeEnd":
+        element.tend = value;
+        break;
+      case "dateEnd":
+        element.dend = value;
+        break;
+      case "price":
+        element.loaigui = value;
+        break;
+      case "name":
+        element.nhanvienlap = value;
+        break;
+    }
+    setTicketSelected({
+      ...ticketSelected,
+      ...element,
+    });
   };
   const onChangeFile = info => {
     if (info.fileList && info.fileList[0]) {
       setTimeout(() => {
         setBase64Image(info.fileList[0].thumbUrl);
-        console.log("=====>>>> Log", info.fileList[0].thumbUrl);
         scanImage(info.fileList[0].name);
       }, 1000);
     } else {
       setBase64Image(null);
     }
   };
-  const handleSubmit = () =>{
-    console.log({...ticketSelected});
-  }
+  const handleAddTicket = () => {
+    if (!ticketSelected) return message.error("Hãy nhập thông tin!");
+    const obj = {
+      ...ticketSelected,
+      nhanvienlap: ticketSelected.nhanvienlap || staffs[0].manv,
+      loaigui: ticketSelected.loaigui || prices[0].magia,
+    };
+    const validate = ValidateFormAddTicket(obj);
+    if (typeof validate === string) return message.info(validate);
+    const card = cards.find(item => item.mathe == validate.mathe);
+    if(card && !card.tinhtrang){
+      TicketServices.AddTicketServices(dispatch, validate);
+    }else{
+      return message.info("Thẻ này đã được sử dụng!");
+    }
+  };
   useEffect(() => {
-    TicketServices.GetDataTicket(dispatch);
-    PriceServices.GetAllPrices(dispatch);
-    StaffServices.GetDataStaff(dispatch);
+    Promise.all(
+      [TicketServices.GetDataTicket(dispatch),
+        PriceServices.GetAllPrices(dispatch),
+        StaffServices.GetDataStaff(dispatch), 
+        CardServices.GetDataCard(dispatch),
+        LocationServices.GetDataLocation(dispatch)]
+    );
   }, []);
-
   const columnTickets = [
     {
       title: "STT",
@@ -142,7 +203,7 @@ const StudentPage = () => {
       key: "mathe",
       dataIndex: "mathe",
       sorter: {
-        compare: (a, b) => a.submathe - b.mathe,
+        compare: (a, b) => a.mathe - b.mathe,
         multiple: 3,
       },
       width: "10%",
@@ -334,163 +395,166 @@ const StudentPage = () => {
         </CCol>
         <CCol xs="5">
           <CForm>
-          <CCard className="table table-full" id="top-info">
-            <CCardHeader className="add-class">
-              <h4>Thông tin vé thẻ</h4>
-            </CCardHeader>
-            <CCardBody>
-              <CRow>
-                <CCol xs="5">
-                  <CFormGroup>
-                    <CLabel htmlFor="name">Mã Thẻ</CLabel>
-                    <CInput
-                      id="name"
-                      placeholder="Code Card"
-                      value={ticketSelected ? ticketSelected.mathe : ""}
-                      onChange={e => handleOnChangeInputTikcet(e, "code")}
-                      disabled
-                      required
-                    />
-                  </CFormGroup>
-                </CCol>
-                <CCol xs="7">
-                  <CFormGroup>
-                    <CLabel htmlFor="ccnumber">Biển Số</CLabel>
-                    <CInput
-                      id="ccnumber"
-                      placeholder="Licene plate"
-                      className="impress"
-                      value={ticketSelected ? ticketSelected.bienso : ""}
-                      onChange={e => handleOnChangeInputTikcet(e, "licence")}
-                      required
-                    />
-                  </CFormGroup>
-                </CCol>
-              </CRow>
-              <CRow>
-                <CCol xs="5">
-                  <CFormGroup>
-                    <CLabel htmlFor="name">Màu Xe</CLabel>
-                    <CInput
-                      id="name"
-                      placeholder="Code Color"
-                      className="impress"
-                      value={ticketSelected ? ticketSelected.mauxe : ""}
-                      onChange={e => handleOnChangeInputTikcet(e, "color")}
-                    />
-                  </CFormGroup>
-                </CCol>
-                <CCol xs="7">
-                  <CFormGroup>
-                    <CLabel htmlFor="ccnumber">Loại Xe</CLabel>
-                    <CInput
-                      id="ccnumber"
-                      placeholder="Type"
-                      className="impress"
-                      value={ticketSelected ? ticketSelected.loaixe : ""}
-                      onChange={e => handleOnChangeInputTikcet(e, "type")}
-                    />
-                  </CFormGroup>
-                </CCol>
-              </CRow>
-              <CRow>
-                <CCol xs="12">
-                  <CFormGroup>
-                    <CLabel htmlFor="name">Thời Gian Băt Đầu</CLabel>
-                    <CInput
-                      type="date"
-                      id="name"
-                      value={
-                        ticketSelected
-                          ? helpers.getDateInputDate(ticketSelected.dstart)
-                          : ""
-                      }
-                      onChange={e => handleOnChangeInputTikcet(e, "dateStart")}
-                    />
-                    <CInput
-                      type="time"
-                      id="name"
-                      value={ticketSelected ? ticketSelected.tstart : ""}
-                      onChange={e => handleOnChangeInputTikcet(e, "timeStart")}
-                    />
-                  </CFormGroup>
-                </CCol>
-              </CRow>
-              <CRow>
-                <CCol xs="12">
-                  <CFormGroup>
-                    <CLabel htmlFor="name">Thời Gian Kết Thúc </CLabel>
-                    <CInput
-                      type="date"
-                      id="name"
-                      value={
-                        ticketSelected
-                          ? helpers.getDateInputDate(ticketSelected.dend)
-                          : ""
-                      }
-                      onChange={e => handleOnChangeInputTikcet(e, "dateEnd")}
-                    />
-                    <CInput
-                      type="time"
-                      id="name"
-                      value={
-                        ticketSelected
-                          ?ticketSelected.tend
-                          : ""
-                      }
-                      onChange={e => handleOnChangeInputTikcet(e, "timeEnd")}
-                    />
-                  </CFormGroup>
-                </CCol>
-              </CRow>
-              <CRow>
-                <CCol xs="6">
-                  <CFormGroup>
-                    <CLabel htmlFor="name">Nhân Viên Lập </CLabel>
-                    <CSelect
-                      id="name"
-                      name="name"
-                      value={ticketSelected ? ticketSelected.nhanvienlap : ""}
-                      onChange={e => handleOnChangeInputTikcet(e, "name")}
-                    >
-                      {staffOptions}
-                    </CSelect>
-                  </CFormGroup>
-                </CCol>
-                <CCol xs="6">
-                  <CFormGroup>
-                    <CLabel htmlFor="name">Loại Gửi </CLabel>
-                    <CSelect
-                      value={ticketSelected ? ticketSelected.loaigui : ""}
-                      onChange={e => handleOnChangeInputTikcet(e, "price")}
-                    >
-                      {typeSend}
-                    </CSelect>
-                  </CFormGroup>
-                </CCol>
-              </CRow>
-            </CCardBody>
-            <CCardFooter>
-              <div className="footer-button">
-                <Button type="default" onClick={() => {
-                  setTicketSelected(null);
-                  setUpdate(false);
-                }}>
-                  Hủy
-                </Button>
-                <Popconfirm
-                  onConfirm={handleSubmit}
-                  title={isUpdate?'Xác nhận cập nhật!':'Xác nhận thêm mới!'}
-                >
-                  <Button type="submit">
-                    {" "}
-                    <CIcon name="cil-cursor" />
-                    Thêm Thẻ
+            <CCard className="table table-full" id="top-info">
+              <CCardHeader className="add-class">
+                <h4>Thông tin vé thẻ</h4>
+              </CCardHeader>
+              <CCardBody>
+                <CRow>
+                  <CCol xs="5">
+                    <CFormGroup>
+                      <CLabel htmlFor="code">Mã Thẻ</CLabel>
+                      <CSelect
+                        id="code"
+                        value={ticketSelected ? ticketSelected.mathe : ""}
+                        onChange={e => handleOnChangeInputTikcet(e, "code")}
+                      >
+                        {cardOptions}
+                      </CSelect>
+                    </CFormGroup>
+                  </CCol>
+                  <CCol xs="7">
+                    <CFormGroup>
+                      <CLabel htmlFor="ccnumber">Biển Số</CLabel>
+                      <CInput
+                        id="ccnumber"
+                        placeholder="Licene plate"
+                        className="impress"
+                        value={ticketSelected ? ticketSelected.bienso : ""}
+                        onChange={e => handleOnChangeInputTikcet(e, "licence")}
+                      />
+                    </CFormGroup>
+                  </CCol>
+                </CRow>
+                <CRow>
+                  <CCol xs="5">
+                    <CFormGroup>
+                      <CLabel htmlFor="name">Màu Xe</CLabel>
+                      <CInput
+                        id="name"
+                        placeholder="Code Color"
+                        className="impress"
+                        value={ticketSelected ? ticketSelected.mauxe : ""}
+                        onChange={e => handleOnChangeInputTikcet(e, "color")}
+                      />
+                    </CFormGroup>
+                  </CCol>
+                  <CCol xs="7">
+                    <CFormGroup>
+                      <CLabel htmlFor="ccnumber">Loại Xe</CLabel>
+                      <CInput
+                        id="ccnumber"
+                        placeholder="Type"
+                        className="impress"
+                        value={ticketSelected ? ticketSelected.loaixe : ""}
+                        onChange={e => handleOnChangeInputTikcet(e, "type")}
+                      />
+                    </CFormGroup>
+                  </CCol>
+                </CRow>
+                <CRow>
+                  <CCol xs="12">
+                    <CFormGroup>
+                      <CLabel htmlFor="name">Thời Gian Băt Đầu</CLabel>
+                      <CInput
+                        type="date"
+                        id="name"
+                        value={
+                          ticketSelected
+                            ? helpers.getDateInputDate(ticketSelected.dstart)
+                            : ""
+                        }
+                        onChange={e =>
+                          handleOnChangeInputTikcet(e, "dateStart")
+                        }
+                      />
+                      <CInput
+                        type="time"
+                        id="name"
+                        value={ticketSelected ? ticketSelected.tstart : ""}
+                        onChange={e =>
+                          handleOnChangeInputTikcet(e, "timeStart")
+                        }
+                      />
+                    </CFormGroup>
+                  </CCol>
+                </CRow>
+                <CRow>
+                  <CCol xs="12">
+                    <CFormGroup>
+                      <CLabel htmlFor="name">Thời Gian Kết Thúc </CLabel>
+                      <CInput
+                        type="date"
+                        id="name"
+                        value={
+                          ticketSelected
+                            ? helpers.getDateInputDate(ticketSelected.dend)
+                            : ""
+                        }
+                        onChange={e => handleOnChangeInputTikcet(e, "dateEnd")}
+                      />
+                      <CInput
+                        type="time"
+                        id="name"
+                        value={ticketSelected ? ticketSelected.tend : ""}
+                        onChange={e => handleOnChangeInputTikcet(e, "timeEnd")}
+                      />
+                    </CFormGroup>
+                  </CCol>
+                </CRow>
+                <CRow>
+                  <CCol xs="6">
+                    <CFormGroup>
+                      <CLabel htmlFor="name">Nhân Viên Lập </CLabel>
+                      <CSelect
+                        id="name"
+                        name="name"
+                        value={ticketSelected ? ticketSelected.nhanvienlap : ""}
+                        onChange={e => handleOnChangeInputTikcet(e, "name")}
+                      >
+                        {staffOptions}
+                      </CSelect>
+                    </CFormGroup>
+                  </CCol>
+                  <CCol xs="6">
+                    <CFormGroup>
+                      <CLabel htmlFor="name">Loại Gửi </CLabel>
+                      <CSelect
+                        value={ticketSelected ? ticketSelected.loaigui : ""}
+                        onChange={e => handleOnChangeInputTikcet(e, "price")}
+                      >
+                        {typeSend}
+                      </CSelect>
+                    </CFormGroup>
+                  </CCol>
+                </CRow>
+              </CCardBody>
+              <CCardFooter>
+                <div className="footer-button">
+                  <Button
+                    type="default"
+                    onClick={() => {
+                      setTicketSelected(null);
+                      setUpdate(false);
+                    }}
+                  >
+                    Hủy
                   </Button>
-                </Popconfirm>
-              </div>
-            </CCardFooter>
-          </CCard>
+                  <Popconfirm
+                    onConfirm={() => handleAddTicket()}
+                    title={
+                      isUpdate ? "Xác nhận cập nhật!" : "Xác nhận thêm mới!"
+                    }
+                  >
+                    <Button type="submit">
+                      {" "}
+                      <CIcon name="cil-cursor" />
+                      Thêm Thẻ
+                    </Button>
+                  </Popconfirm>
+                </div>
+              </CCardFooter>
+            </CCard>
           </CForm>
         </CCol>
       </Row>
