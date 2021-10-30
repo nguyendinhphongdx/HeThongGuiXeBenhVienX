@@ -41,7 +41,7 @@ create table tblVeThe(
 	mauXe nvarchar(255) not null,
 	loaiXe nvarchar(255) not null,
 	thoiGianBatDau datetime not null,
-	thoiGianKetThuc datetime not null,
+	thoiGianKetThuc datetime,
 	maNhanVien int,
 	maGia int,
 	CONSTRAINT  PK_tblVeThe primary key (maThe,bienSo,thoiGianBatDau),
@@ -49,7 +49,6 @@ create table tblVeThe(
 	CONSTRAINT  FK_tblVeThe_tblGia foreign key (maGia) references tblGia(maGia),
 	CONSTRAINT  FK_tblVeThe_tblNhanVien foreign key (maNhanVien) references tblNhanVien(maNhanVien)
 )
-
 create table tblTaiKhoan(
 	maTaiKhoan int not null identity(1,1),
 	maNhanVien int not null,
@@ -106,14 +105,14 @@ insert into tblThe values(4,0);
 
 go
 
-create proc sp_them_vethe @mathe int,@bienso nvarchar(255),@mauxe nvarchar(255),@loaixe nvarchar(255),@thoigianbatdau datetime,@thoigianketthuc datetime,@manhanvien int,@magia int
+create proc sp_them_vethe @mathe int,@bienso nvarchar(255),@mauxe nvarchar(255),@loaixe nvarchar(255),@thoigianbatdau datetime,@manhanvien int,@magia int
 as
 	begin
 		declare @trangthai bit
 		set @trangthai = (select tinhTrang from tblThe where maThe = @mathe)
 		if @trangthai = 0
 			begin
-				insert into tblVeThe values(@mathe,@bienso,@mauxe,@loaixe,@thoigianbatdau,@thoigianketthuc,@manhanvien,@magia)
+				insert into tblVeThe values(@mathe,@bienso,@mauxe,@loaixe,@thoigianbatdau,@thoigianbatdau,@manhanvien,@magia)
 				update tblThe
 				set tinhTrang = 1
 				where maThe=@mathe
@@ -121,7 +120,7 @@ as
 		else
 			print 'the da duoc su dung'	
 end
-exec sp_them_vethe 1,'29T1-095312',N'đen',N'lead','2021-09-27 00:00:00.000','2021-09-27 10:00:00.000',2,2
+exec sp_them_vethe 8,'18H1-01234',N'black',N'Feature','2021-09-27 00:00:00.000',3,3
 -- store sửa ve thẻ
 go
 create proc sp_sua_vethe @mathe int,@bienso nvarchar(255),@mauxe nvarchar(255),@loaixe nvarchar(255),@manhanvien int,@magia int
@@ -337,7 +336,6 @@ begin
 end
 -- trigger update soluonghientai khi them, cap nhat vethe
 go
---drop trigger tr_soluonghientai_khuvuc_vethe
 create trigger tr_soluonghientai_khuvuc_them_vethe on tblVeThe
 for insert
 as
@@ -361,4 +359,15 @@ as
 	end
 go 
 
-select * from tblVaiTro
+select b.tenKhuVuc,b.soLuongToiDa,b.soLuongHienTai from tblThe a, tblKhuVuc b
+where a.maKhuVuc = b.maKhuVuc
+
+-- thống kê 
+-- thống kê số lượng theo loại
+create proc analysisType 
+as
+begin 
+	select loaiXe,count(maThe) as N'Tổng' from tblVeThe
+	group by loaiXe
+end
+exec analysisType

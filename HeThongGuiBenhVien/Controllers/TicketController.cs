@@ -18,7 +18,7 @@ namespace HeThongGuiBenhVien.Controllers
         ResponseUlti responseUlti = new ResponseUlti();
         SqlProvider provider = new SqlProvider();
         ITicketService TicketService = new ITicketService();
-
+        ICardService CardService = new ICardService();
 
         [Route("queryAll")] // api/ticket/queryAll
         [HttpGet]
@@ -32,14 +32,14 @@ namespace HeThongGuiBenhVien.Controllers
         [HttpPost]
         public object addTicket([FromBody] VeThe x)
         {
-            //create proc sp_them_vethe @mathe int, @bienso nvarchar(255),@mauxe nvarchar(255),@loaixe nvarchar(255),@thoigianbatdau datetime, @thoigianketthuc datetime,@manhanvien int, @magia int
+            //create proc sp_them_vethe @mathe int, @bienso nvarchar(255),@mauxe nvarchar(255),@loaixe nvarchar(255), @thoigianketthuc datetime,@manhanvien int, @magia int
             //as
             //    begin
             //        declare @trangthai bit
             //        set @trangthai = (select tinhTrang from tblThe where maThe = @mathe)
-		          //  if @trangthai = 0
+            //  if @trangthai = 0
             //            begin
-            //                insert into tblVeThe values(@mathe, @bienso, @mauxe, @loaixe, @thoigianbatdau, @thoigianketthuc, @manhanvien, @magia)
+            //                insert into tblVeThe values(@mathe, @bienso, @mauxe, @loaixe, @thoigianbatdau, @thoigianbatdau, @manhanvien, @magia)
             //                update tblThe
             //                set tinhTrang = 1
             //                where maThe = @mathe
@@ -49,8 +49,8 @@ namespace HeThongGuiBenhVien.Controllers
             //end
             try
             {
-                string[] nameParams = new string[] { "@mathe", "@bienso", "@mauxe", "@loaixe", "@thoigianbatdau", "@thoigianketthuc", "@manhanvien", "@magia" };
-                object[] parames = new object[] { x.Mathe, x.Bienso, x.Mauxe, x.Loaixe, x.Thoigianbatdau, x.Thoigianketthuc, x.Manv, x.Magia };
+                string[] nameParams = new string[] { "@mathe", "@bienso", "@mauxe", "@loaixe", "@thoigianbatdau","@manhanvien", "@magia" };
+                object[] parames = new object[] { x.Mathe, x.Bienso, x.Mauxe, x.Loaixe, x.Thoigianbatdau, x.Manv, x.Magia };
                 if (provider.ExecuteNonProc("sp_them_vethe", nameParams, parames) > 0)
                 {
                     string queryString = "select * from tblVeThe WHERE 1=1 ";
@@ -98,6 +98,40 @@ namespace HeThongGuiBenhVien.Controllers
                 return responseUlti.Error(e.Message, 400);
             }
         }
+        [Route("returnTicket")] // api/ticket/returnTicket
+        [HttpPost]
+        public object returnTicket([FromBody] VeThe x)
+        {
+            //create proc sp_thu_ve @mathe int, @bienso nvarchar(255),@mauxe nvarchar(255),@loaixe nvarchar(255),@thoigianketthuc datetime
+            //as
+            //    begin
+            //        update tblVeThe
+            //        set thoiGianKetThuc = @thoigianketthuc
+            //        where maThe = @mathe and bienSo = @bienso and mauXe = @mauxe and loaiXe = @loaixe
+            //        update tblThe
+            //        set tinhTrang = 0
+            //        where maThe = @mathe
+            //end
+            try
+            {
+                string[] nameParams = new string[] { "@mathe", "@bienso", "@mauxe", "@loaixe", "@thoigianketthuc" };
+                object[] parames = new object[] { x.Mathe, x.Bienso, x.Mauxe, x.Loaixe, x.Thoigianketthuc };
+                if (provider.ExecuteNonProc("sp_thu_ve", nameParams, parames) > 0)
+                {
+                    string queryString = "select * from tblThe WHERE 1=1 ";
+                    DataTable result = provider.ExecuteQuery(queryString);
+                    return responseUlti.dataArray(CardService.GetTheInTable(result), "Cập nhật thông tin thành công!", 200);
+                }
+                else
+                {
+                    return responseUlti.Error("Cập nhật thông tin không thành công!", 400);
+                }
+            }
+            catch (Exception e)
+            {
+                return responseUlti.Error(e.Message, 400);
+            }
+        }
         [Route("deleteCard")] // api/ticket/deleteCard
         [HttpPost]
         public object deleteCard([FromBody] The the)
@@ -121,6 +155,20 @@ namespace HeThongGuiBenhVien.Controllers
                 {
                     return responseUlti.Error("Xóa thông tin không thành công!", 400);
                 }
+            }
+            catch (Exception e)
+            {
+                return responseUlti.Error(e.Message, 400);
+            }
+        }
+        [Route("analysis")] // api/ticket/analysis
+        [HttpGet]
+        public object analysisType()
+        {
+            try
+            {
+                DataTable result = provider.ExecuteProc("analysisType");
+                return responseUlti.dataArray(TicketService.GetTypeInTable(result), "Thành công!", 200);
             }
             catch (Exception e)
             {

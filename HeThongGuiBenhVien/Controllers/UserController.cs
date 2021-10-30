@@ -115,7 +115,7 @@ namespace HeThongGuiBenhVien.Controllers
                 object[] parames = new object[] { nhanvien.Tennv, nhanvien.Tuoi, nhanvien.Sodienthoai, nhanvien.Mavaitro, nhanvien.Manv};
                 if (provider.ExecuteNonProc("sp_capnhat_nhanvien", nameParams, parames) > 0)
                 {
-                    string queryString = "select * from tblNhanVien WHERE  1=1 AND maNhanVien=" + parames[4];
+                    string queryString = "select * from tblNhanVien WHERE  1=1";
                     DataTable result = provider.ExecuteQuery(queryString);
                     return responseUlti.dataArray(userService.GetNhanVienInTable(result), "Cập nhật thông tin thành công!", 200);
                 }

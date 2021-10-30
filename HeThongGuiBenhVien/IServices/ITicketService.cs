@@ -32,5 +32,21 @@ namespace HeThongGuiBenhVien.IServices
             }
             return ls;
         }
+        public AnalysisType GetTypeInRow(DataRow dataRow)
+        {
+            AnalysisType x = new AnalysisType();
+            x.Soluong = Convert.ToInt32(dataRow[1]);
+            x.Loaixe = dataRow[0] + "";
+            return x;
+        }
+        internal List<object> GetTypeInTable(DataTable result)
+        {
+            List<object> ls = new List<object>();
+            for (int i = 0; i < result.Rows.Count; i++)
+            {
+                ls.Add(this.GetTypeInRow(result.Rows[i]));
+            }
+            return ls;
+        }
     }
 }
