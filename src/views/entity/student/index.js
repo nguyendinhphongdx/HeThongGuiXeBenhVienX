@@ -42,12 +42,6 @@ const StudentPage = () => {
   const [ticketSelected, setTicketSelected] = useState(null);
   const [isUpdate, setUpdate] = useState(false);
   const [base64Image, setBase64Image] = useState(null);
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-  } = useForm();
-  const [form] = Form.useForm();
   const tickets = useSelector(state => state.Ticket.tickets);
   const prices = useSelector(state => state.Price.prices);
   const staffs = useSelector(state => state.Staff.staffs);
@@ -70,6 +64,7 @@ const StudentPage = () => {
     });
     setUpdate(true);
     setTicketSelected(ticket);
+    console.log(ticket);
   };
   const toggleLaser = () => {
     document.getElementById("laser").classList.toggle("active");
@@ -107,15 +102,14 @@ const StudentPage = () => {
       </option>
     );
   });
-  const cardOptions = cards
-    .map((item, index) => {
-      const location = locations.find(kv => kv.maKhuVuc == item.makhuvuc);
-      return (
-        <option key={index} value={item.mathe}>
-          {`${item.mathe} - ${location?location.tenKhuVuc:''}`}
-        </option>
-      );
-    });
+  const cardOptions = cards.map((item, index) => {
+    const location = locations.find(kv => kv.maKhuVuc == item.makhuvuc);
+    return (
+      <option key={index} value={item.mathe}>
+        {`${item.mathe} - ${location ? location.tenKhuVuc : ""}`}
+      </option>
+    );
+  });
   const handleOnChangeInputTikcet = (e, type) => {
     let element = {};
     const value = e.target.value;
@@ -175,21 +169,28 @@ const StudentPage = () => {
     };
     const validate = ValidateFormAddTicket(obj);
     if (typeof validate === string) return message.info(validate);
+
     const card = cards.find(item => item.mathe == validate.mathe);
-    if(card && !card.tinhtrang){
-      TicketServices.AddTicketServices(dispatch, validate);
-    }else{
+    if (card && !card.tinhtrang) {
+      helpers.SetLoading(true, dispatch);
+      TicketServices.AddTicketServices(dispatch, validate).finally(() => {
+        setTimeout(() => {
+          message.success({ content: "Thêm thành công", key: "updatable" });
+          helpers.SetLoading(false, dispatch);
+        }, 2000);
+      });
+    } else {
       return message.info("Thẻ này đã được sử dụng!");
     }
   };
   useEffect(() => {
-    Promise.all(
-      [TicketServices.GetDataTicket(dispatch),
-        PriceServices.GetAllPrices(dispatch),
-        StaffServices.GetDataStaff(dispatch), 
-        CardServices.GetDataCard(dispatch),
-        LocationServices.GetDataLocation(dispatch)]
-    );
+    Promise.all([
+      TicketServices.GetDataTicket(dispatch),
+      PriceServices.GetAllPrices(dispatch),
+      StaffServices.GetDataStaff(dispatch),
+      CardServices.GetDataCard(dispatch),
+      LocationServices.GetDataLocation(dispatch),
+    ]);
   }, []);
   const columnTickets = [
     {
@@ -487,7 +488,8 @@ const StudentPage = () => {
                         type="date"
                         id="name"
                         value={
-                          ticketSelected
+                          ticketSelected &&
+                          ticketSelected.thoigianketthuc !== "Chưa trả lại"
                             ? helpers.getDateInputDate(ticketSelected.dend)
                             : ""
                         }
@@ -496,7 +498,12 @@ const StudentPage = () => {
                       <CInput
                         type="time"
                         id="name"
-                        value={ticketSelected ? ticketSelected.tend : ""}
+                        value={
+                          ticketSelected &&
+                          ticketSelected.thoigianketthuc !== "Chưa trả lại"
+                            ? ticketSelected.tend
+                            : ""
+                        }
                         onChange={e => handleOnChangeInputTikcet(e, "timeEnd")}
                       />
                     </CFormGroup>
@@ -546,7 +553,7 @@ const StudentPage = () => {
                       isUpdate ? "Xác nhận cập nhật!" : "Xác nhận thêm mới!"
                     }
                   >
-                    <Button type="submit">
+                    <Button type="primary">
                       {" "}
                       <CIcon name="cil-cursor" />
                       Thêm Thẻ
