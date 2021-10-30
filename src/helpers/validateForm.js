@@ -72,35 +72,32 @@ export const ValidateFormLogin = (data) => {
     return true;
 }
 export const ValidateFormRegistry = (data) => {
-    console.log(data);
-    if (!data.username) {
-        return {
-            message: 'Username not invalid'
-        }
+    if (!data.sodienthoai) {
+        return 'Số điện thoại không được bỏ trống!'
+        
     }
-    if (!data.password) {
-        return {
-            message: 'Password not invalid'
-        }
+    if (!data.tenNhanVien) {
+        return 'Tên nhân viên không được bỏ trống!'
+
     }
-    if (data.password !== data.repeat) {
-        return {
-            message: 'password is not same'
-        }
+    if (!data.tuoi || +data.tuoi < 16) {
+        return  'Tuổi không được nhỏ hơn 16'
+    
     }
-    if (!['1','2','3'].includes(data.role_id)) {
-        return {
-            message: 'Role is not defind'
-        }
+    if (!['1','2','3',1, 2, 3].includes(data.mavaitro) ) {
+        return  'Chọn chức vụ'
+        
     }
-    if (data.ip.split('.').length!=4) {
-        return {
-            message: 'Ip address is incorect'
-        }
-    }
-    return true;
+    return {
+        manv:(data.manv?+data.manv:-1),
+        sodienthoai:data.sodienthoai,
+        tennv: data.tenNhanVien,
+        tuoi:+data.tuoi,
+        mavaitro:+data.mavaitro
+    };
 }
 export const ValidateFormAddTicket = (data) => {
+    console.log(data);
     if(!data.mathe){
         return "Chọn thẻ"
     }
@@ -110,7 +107,7 @@ export const ValidateFormAddTicket = (data) => {
     if(!data.dstart || !data.tstart){
         return "Nhập vào ngày bắt đầu!"
     }
-    if(!data.loaigui){
+    if(!data.magia){
         return "Chọn loại gửi!"
     }
     if(!data.loaixe){
@@ -119,7 +116,7 @@ export const ValidateFormAddTicket = (data) => {
     if(!data.mauxe){
         return "Nhập màu xe!"
     }
-    if(!data.nhanvienlap){
+    if(!data.manv){
         return "Nhân viên lập chưa được lựa chọn!"
     }
     const stringTime = data.tstart.split(":");
@@ -130,8 +127,30 @@ export const ValidateFormAddTicket = (data) => {
     return {
         ...data,
         mathe:+data.mathe,
-        manv:+data.nhanvienlap,
-        magia:+data.loaigui,
+        manv:+data.manv,
+        magia:+data.magia,
         thoigianbatdau:dateStart.toISOString()
+    }
+}
+export const ValidateFormReturnTicket = (data) => {
+    if(!data.mathe){
+        return "Mã thẻ không chính xác!"
+    }
+    if(!data.bienso){
+        return "Biển số không chính xác!"
+
+    }
+    if(!data.loaixe){
+        return "Loại xe không chính xác!"
+    }
+    if(!data.mauxe){
+        return "Màu xe không chính xác!"
+    }
+    return {
+        bienso:data.bienso,
+        mathe:+data.mathe,
+        loaixe:data.loaixe,
+        mauxe:data.mauxe,
+        thoigianketthuc:new Date(new Date().getTime()+25200000).toISOString()
     }
 }

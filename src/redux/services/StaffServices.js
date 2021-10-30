@@ -21,12 +21,28 @@ class StaffServices{
         })
         return request
     }
-    async UpdateDataStaff(dispatch,body){
-        message.loading({ content: 'Đang xử lý...', key });
+    async UpdateStaff(dispatch,body){
         const request = await sendRequest('/user/updateUser','post',body)
         .then(response =>{
             if(response.status == 200){
-                const action = staffActions.Update_Staff(response.data[0])
+                const action = staffActions.Get_All_Staff(converter.convertUsers(response.data || []))
+                dispatch(action);
+                return 'success'
+            }else{
+                throw new Error(response.message);
+            }
+        })
+        .catch((error) =>{
+            console.log(error);
+            message.warning({ content: 'Cập nhật lỗi.', key });
+        })
+        return request
+    }
+    async AddStaff(dispatch,body){
+        const request = await sendRequest('/user/addUser','post',body)
+        .then(response =>{
+            if(response.status == 200){
+                const action = staffActions.Get_All_Staff(converter.convertUsers(response.data || []))
                 dispatch(action);
                 return 'success'
             }else{
@@ -56,12 +72,12 @@ class StaffServices{
         })
         return request
     }
-    async AddClass(dispatch,body){
-        message.loading({ content: 'Đang xử lý... ', key });
-        const request = await sendRequest('/class/add_class','post',body)
+    async GetDataAccount(dispatch){
+        const request = await sendRequest('/account/queryAll','get')
         .then(response =>{
-            if(response.status == 200){
-            
+            if(response.status == 200){ 
+                const action = staffActions.QueryAll_Account(response.data || [])
+                dispatch(action);
                 return 'success'
             }else{
                 throw new Error(response.message);
@@ -69,7 +85,6 @@ class StaffServices{
         })
         .catch((error) =>{
             console.log(error);
-            message.warning({ content: 'Thêm Lớp lỗi.', key });
         })
         return request
     }

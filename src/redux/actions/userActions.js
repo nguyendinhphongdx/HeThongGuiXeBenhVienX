@@ -19,3 +19,4 @@ export const QueryAll_User = data => {
     payload: data,
   };
 };
+

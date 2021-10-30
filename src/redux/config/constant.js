@@ -3,6 +3,7 @@ export const UserConstants = {
   ACTION_LOGIN: "ACTION_LOGIN",
   ACTION_SIGNUP: "ACTION_SIGNUP",
   QUERY_ALL: "QUERY_ALL",
+
 };
 export const DashboardCountConstants = {
   COLLECTION_LOGS: "COLLECTION_LOGS",
@@ -36,7 +37,9 @@ export const TicketConstant = {
 export const StaffConstant = {
   GET_DATA_STAFF:"GET_DATA_STAFF",
   ADD_STAFF:"ADD_STAFF",
-  UPDATE_SATFF:"UPDATE_SATFF"
+  UPDATE_SATFF:"UPDATE_SATFF",
+  QUERY_ACCOUNT:"QUERY_ACCOUNT",
+  UPDATE_USER_ACCOUNT:"UPDATE_USER_ACCOUNT"
 }
 export const PriceConstant = {
   GET_DATA_PRICE:"GET_DATA_PRICE",

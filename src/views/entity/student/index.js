@@ -1,5 +1,5 @@
+import { UploadOutlined } from "@ant-design/icons";
 import CIcon from "@coreui/icons-react";
-import { PlusOutlined, UploadOutlined } from "@ant-design/icons";
 import {
   CCard,
   CCardBody,
@@ -19,44 +19,56 @@ import {
   Image,
   message,
   Popconfirm,
-  Form,
   Row,
   Table,
   Upload,
 } from "antd";
-import React, { useEffect, useRef, useState } from "react";
-import ActionClass from "../_class/components/ActionClass";
-import "./index.scss";
-import helpers from "../../../helpers/helpers";
-import TicketServices from "../../../redux/services/TicketServices";
-import { useDispatch, useSelector } from "react-redux";
-import PriceServices from "../../../redux/services/PriceServices";
-import StaffServices from "../../../redux/services/StaffServices";
-import { ValidateFormAddTicket } from "../../../helpers/validateForm";
-import { useForm } from "react-hook-form";
 import { string } from "prop-types";
+import React, { useEffect, useMemo, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import helpers from "../../../helpers/helpers";
+import {
+  ValidateFormAddTicket,
+  ValidateFormReturnTicket,
+} from "../../../helpers/validateForm";
 import CardServices from "../../../redux/services/CardServices";
 import LocationServices from "../../../redux/services/LocationServices";
+import PriceServices from "../../../redux/services/PriceServices";
+import StaffServices from "../../../redux/services/StaffServices";
+import TicketServices from "../../../redux/services/TicketServices";
+import ActionClass from "../_class/components/ActionClass";
+import StoreNotif from "../../notifications/notif/notifStore";
+
+import "./index.scss";
 const StudentPage = () => {
   const dispatch = useDispatch();
   const [ticketSelected, setTicketSelected] = useState(null);
   const [isUpdate, setUpdate] = useState(false);
+  const [disable, setDisable] = useState(false);
   const [base64Image, setBase64Image] = useState(null);
+  const store = useSelector(state => state);
   const tickets = useSelector(state => state.Ticket.tickets);
   const prices = useSelector(state => state.Price.prices);
   const staffs = useSelector(state => state.Staff.staffs);
   const cards = useSelector(state => state.Card.cards);
+
   const locations = useSelector(state => state.Location.locations);
-  const ticketConverted = tickets.map(item => {
-    const findnv = staffs.find(nv => nv.manv === item.manv);
-    const findprice = prices.find(pr => pr.magia === item.magia);
-    return {
-      ...item,
-      nhanvienlap: findnv ? findnv.tennv : "unknown",
-      dongia: findprice ? findprice.giaTien : "unknown",
-    };
-  });
+  const ticketConverted = useMemo(() => {
+    return tickets.map(item => {
+      const findnv = staffs.find(nv => nv.manv === item.manv);
+      const findprice = prices.find(pr => pr.magia === item.magia);
+      const findcard = cards.find(cr => cr.mathe === item.mathe);
+      return {
+        ...item,
+        nhanvienlap: findnv ? findnv.tennv : "unknown",
+        dongia: findprice ? findprice.giaTien : "unknown",
+        tinhtrang:findcard?(findcard.tinhtrang?"Used":"Not Used"):"unknown",
+      };
+    });
+  }, [tickets, staffs, prices,cards]);
+  console.log('ticketConverted',ticketConverted);
   const selectTicket = ticket => {
+    console.log(ticket);
     window.scrollTo({
       top: 0,
       left: 0,
@@ -64,7 +76,7 @@ const StudentPage = () => {
     });
     setUpdate(true);
     setTicketSelected(ticket);
-    console.log(ticket);
+    setDisable(ticket.thoigianketthuc !== "Chưa trả lại");
   };
   const toggleLaser = () => {
     document.getElementById("laser").classList.toggle("active");
@@ -164,24 +176,59 @@ const StudentPage = () => {
     if (!ticketSelected) return message.error("Hãy nhập thông tin!");
     const obj = {
       ...ticketSelected,
-      nhanvienlap: ticketSelected.nhanvienlap || staffs[0].manv,
-      loaigui: ticketSelected.loaigui || prices[0].magia,
+      manv: ticketSelected.manv || staffs[0].manv,
+      magia: ticketSelected.magia || prices[0].magia,
     };
     const validate = ValidateFormAddTicket(obj);
     if (typeof validate === string) return message.info(validate);
-
-    const card = cards.find(item => item.mathe == validate.mathe);
-    if (card && !card.tinhtrang) {
+    if (!isUpdate) {
+      const card = cards.find(item => item.mathe == validate.mathe);
+      if (card && !card.tinhtrang) {
+        helpers.SetLoading(true, dispatch);
+        TicketServices.AddTicketServices(dispatch, validate).finally(() => {
+          setTimeout(() => {
+            message.success({ content: "Thêm thành công", key: "updatable" });
+            helpers.SetLoading(false, dispatch);
+          }, 2000);
+        });
+      } else return message.info("Thẻ này đã được sử dụng!");
+    } else {
       helpers.SetLoading(true, dispatch);
-      TicketServices.AddTicketServices(dispatch, validate).finally(() => {
+      TicketServices.UpdateTicketServices(dispatch, validate).finally(() => {
         setTimeout(() => {
-          message.success({ content: "Thêm thành công", key: "updatable" });
+          message.success({ content: "Cập nhật thành công", key: "updatable" });
+          helpers.SetLoading(false, dispatch);
+        }, 2000);
+      });
+    }
+  };
+  const handleReturnTicket = () => {
+    const isReturn = cards.find(item => item.mathe === ticketSelected.mathe);
+    console.log(cards, ticketSelected.mathe);
+
+    if (isReturn.tinhtrang) {
+      const obj = {
+        ...ticketSelected,
+        manv: ticketSelected.manv || staffs[0].manv,
+        magia: ticketSelected.magia || prices[0].magia,
+      };
+      const validate = ValidateFormReturnTicket(obj);
+      helpers.SetLoading(true, dispatch);
+      TicketServices.ReturnTicketServices(dispatch, validate).finally(() => {
+        TicketServices.GetDataTicket(dispatch)
+        setTimeout(() => {
+          StoreNotif.openSuccessNotif("Thông báo", "Thu hồi thành công!", 2000);
           helpers.SetLoading(false, dispatch);
         }, 2000);
       });
     } else {
-      return message.info("Thẻ này đã được sử dụng!");
+      message.info("Không thể thu hồi vé đã trả lại!");
     }
+  };
+  const handleCancel = () => {
+    setTicketSelected(null);
+    setUpdate(false);
+    setDisable(false);
   };
   useEffect(() => {
     Promise.all([
@@ -190,15 +237,9 @@ const StudentPage = () => {
       StaffServices.GetDataStaff(dispatch),
       CardServices.GetDataCard(dispatch),
       LocationServices.GetDataLocation(dispatch),
-    ]);
+    ]).finally(() => message.success("Lấy dữ liệu vé thẻ thành công!"));
   }, []);
   const columnTickets = [
-    {
-      title: "STT",
-      key: "index",
-      dataIndex: "index",
-      width: "3%",
-    },
     {
       title: "Mã Thẻ",
       key: "mathe",
@@ -208,6 +249,12 @@ const StudentPage = () => {
         multiple: 3,
       },
       width: "10%",
+    },
+    {
+      title: "Trạng Thái",
+      key: "tinhtrang",
+      dataIndex: "tinhtrang",
+      width: "8%",
     },
     {
       title: "Biển Số",
@@ -516,7 +563,7 @@ const StudentPage = () => {
                       <CSelect
                         id="name"
                         name="name"
-                        value={ticketSelected ? ticketSelected.nhanvienlap : ""}
+                        value={ticketSelected ? ticketSelected.manv : ""}
                         onChange={e => handleOnChangeInputTikcet(e, "name")}
                       >
                         {staffOptions}
@@ -527,7 +574,7 @@ const StudentPage = () => {
                     <CFormGroup>
                       <CLabel htmlFor="name">Loại Gửi </CLabel>
                       <CSelect
-                        value={ticketSelected ? ticketSelected.loaigui : ""}
+                        value={ticketSelected ? ticketSelected.magia : ""}
                         onChange={e => handleOnChangeInputTikcet(e, "price")}
                       >
                         {typeSend}
@@ -538,25 +585,29 @@ const StudentPage = () => {
               </CCardBody>
               <CCardFooter>
                 <div className="footer-button">
-                  <Button
-                    type="default"
-                    onClick={() => {
-                      setTicketSelected(null);
-                      setUpdate(false);
-                    }}
-                  >
+                  <Button type="default" onClick={handleCancel}>
                     Hủy
+                  </Button>
+                  <Button
+                    type="primary"
+                    disabled={!isUpdate}
+                    onClick={handleReturnTicket}
+                  >
+                    {" "}
+                    <CIcon name="cil-ban" />
+                    Thu hồi
                   </Button>
                   <Popconfirm
                     onConfirm={() => handleAddTicket()}
+                    disabled={disable}
                     title={
                       isUpdate ? "Xác nhận cập nhật!" : "Xác nhận thêm mới!"
                     }
                   >
-                    <Button type="primary">
+                    <Button type="primary" disabled={disable}>
                       {" "}
                       <CIcon name="cil-cursor" />
-                      Thêm Thẻ
+                      {isUpdate ? "Cập nhật" : "Tạo vé"}
                     </Button>
                   </Popconfirm>
                 </div>

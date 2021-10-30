@@ -2,7 +2,7 @@ import { message } from "antd";
 import sendRequest from "../../axios/requestAPI";
 import converter from "../../helpers/converter";
 import StoreNotif from "../../views/notifications/notif/notifStore";
-import { QueryAll_User } from "../actions/userActions";
+import { QueryAll_Account, QueryAll_User } from "../actions/userActions";
 
 class UserService {
   LoginService = async body => {

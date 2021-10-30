@@ -4,7 +4,8 @@ const initialState = {
     username: null,
     password: null,
     token:null,
-    users:[]
+    users:[],
+    accounts:[]
 };
 
 const users = (state = initialState, action) => {

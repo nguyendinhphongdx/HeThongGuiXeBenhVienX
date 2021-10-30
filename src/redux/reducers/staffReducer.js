@@ -2,6 +2,7 @@ import { message } from 'antd';
 import {StaffConstant} from '../config/constant';
 const initialState={
     staffs: [],
+    accounts:[]
 }
 const key='updatable'
 const staff =(state = initialState, action)=>{
@@ -22,6 +23,13 @@ const staff =(state = initialState, action)=>{
             return {
                 ...state,
                 staffs: _newList
+            };
+        }
+        case StaffConstant.QUERY_ACCOUNT:{
+            const { payload } = action; // item addd
+            return {
+                ...state,
+                accounts: payload
             };
         }
         default: return {...state}
