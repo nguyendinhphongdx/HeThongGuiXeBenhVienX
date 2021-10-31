@@ -1,0 +1,1 @@
+{"version":3,"sources":["webpack://src/views/entity/professor/index.scss"],"names":[],"mappings":"AACI,2CACI,SAAA","file":"16.b8d78371.chunk.css","sourcesContent":[".TabelDetailSubject{\r\n    .ant-table-thead > tr > th{\r\n        padding:0;\r\n    }\r\n\r\n}"]}
